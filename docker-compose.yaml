@@ -1,0 +1,274 @@
+# Copyright (C) 2022 - present Juergen Zimmermann, Hochschule Karlsruhe
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# Aufruf:   docker compose up postgres pgadmin fakesmtp buch
+#           docker compose down
+
+# Netzwerk "buch_default" für die Container durch den Verzeichnisnamen
+---
+# https://docs.docker.com/compose/compose-file
+# https://docs.docker.com/compose/compose-file/compose-file-v3
+services:
+
+  # ------------------------------------------------------------------------------------
+  # P o s t g r e S Q L
+  # ------------------------------------------------------------------------------------
+  postgres:
+    image: postgres:15.2-bullseye
+    ports:
+      - published: 5432
+        target: 5432
+    volumes:
+      - type: bind
+        source: C:/Zimmermann/volumes/postgres/data
+        target: /var/lib/postgresql/data
+      - type: bind
+        source: C:/Zimmermann/volumes/postgres/postgresql.conf
+        target: /etc/postgresql/postgresql.conf
+        read_only: true
+      - type: bind
+        source: C:/Zimmermann/volumes/postgres/tablespace
+        target: /var/lib/postgresql/tablespace
+      - type: bind
+        source: C:/Zimmermann/volumes/postgres/csv/buch
+        target: /csv
+        read_only: true
+      - type: bind
+        source: C:/Zimmermann/volumes/postgres/sql
+        target: /sql
+        read_only: true
+    environment:
+      POSTGRES_PASSWORD: p
+      TZ: Europe/Berlin
+      PGTZ: Europe/Berlin
+      #PGDATA: /var/lib/postgresql/data
+      # https://www.postgresql.org/docs/current/auth-trust.html
+      #POSTGRES_HOST_AUTH_METHOD: trust
+    user: "postgres:postgres"
+    security_opt:
+      - label:user:postgres
+      - no-new-privileges:true
+    container_name: postgres
+    hostname: postgres
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2048M
+    healthcheck:
+      test:
+        [
+          CMD,
+          pg_isready,
+          --dbname,
+          postgres,
+          --username,
+          postgres
+        ]
+      interval: 5s
+      timeout: 2s
+      start_period: 5s
+
+  # ------------------------------------------------------------------------------------
+  # p g a d m i n
+  # ------------------------------------------------------------------------------------
+  # http://localhost:8888 mit Emailadresse "pgadmin@acme.com" und Passwort "p"
+  pgadmin:
+    image: dpage/pgadmin4:6.21
+    ports:
+      - published: 8888
+        target: 80
+    volumes:
+      - type: bind
+        source: C:/Zimmermann/volumes/postgres/pgadmin
+        # https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html
+        target: /var/lib/pgadmin
+      - type: bind
+        source: C:/Zimmermann/volumes/postgres/pgadmin4
+        target: /var/lib/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin@acme.com
+      PGADMIN_DEFAULT_PASSWORD: p
+    user: "pgadmin:5050"
+    container_name: pgadmin
+    hostname: pgadmin
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2048M
+
+  # ------------------------------------------------------------------------------------
+  # M y S Q L
+  # ------------------------------------------------------------------------------------
+  mysql:
+    image: mysql:8.0.32-oracle
+    ports:
+      - published: 3306
+        target: 3306
+    volumes:
+      - type: bind
+        source: C:/Zimmermann/volumes/mysql/db
+        target: /var/lib/mysql
+      - type: bind
+        source: C:/Zimmermann/volumes/mysql/mysqld
+        target: /var/run/mysqld
+      - type: bind
+        source: C:/Zimmermann/volumes/mysql/run-mysqld
+        target: /run/mysqld
+      - type: bind
+        source: C:/Zimmermann/volumes/mysql/log
+        target: /var/log
+      - type: bind
+        source: C:/Zimmermann/volumes/mysql/tmp
+        target: /tmp
+      - type: bind
+        source: C:/Zimmermann/volumes/mysql/csv/buch
+        # https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_secure_file_priv
+        # SHOW VARIABLES LIKE "secure_file_priv";
+        target: /var/lib/mysql-files
+      - type: bind
+        source: C:/Zimmermann/volumes/mysql/sql
+        target: /sql
+        read_only: true
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: p
+      TZ: Europe/Berlin
+    security_opt:
+      - label:user:mysql
+      - no-new-privileges:true
+    container_name: mysql
+    hostname: mysql
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2048M
+    healthcheck:
+      test:
+        [
+          CMD,
+          mysqladmin,
+          --user=root,
+          --password=p,
+          --host=mysql,
+          ping
+        ]
+      interval: 5s
+      timeout: 2s
+      start_period: 5s
+
+  # ------------------------------------------------------------------------------------
+  # p h p M y A d m i n
+  # ------------------------------------------------------------------------------------
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.2.1
+    links: [ mysql ]
+    ports:
+      - published: 8889
+        target: 80
+    environment:
+      MYSQL_ROOT_PASSWORD: p
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    # kein dedizierter User im Image vorhanden
+    container_name: phpmyadmin
+    # https://github.com/phpmyadmin/docker/issues/293
+    hostname: phpmyadmin.mysql.docker
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 768M
+
+  # ------------------------------------------------------------------------------------
+  # D B e a v e r
+  # ------------------------------------------------------------------------------------
+  # als User "cbadmin" muss man eine DB-Verbindung und einen User einrichten
+  dbeaver:
+    image: dbeaver/cloudbeaver:23.0.0
+    links: [ mysql ]
+    ports:
+      - published: 8978
+        target: 8978
+    volumes:
+      - type: bind
+        source: C:/Zimmermann/volumes/dbeaver
+        target: /opt/cloudbeaver/workspace
+    environment:
+      TZ: Europe/Berlin
+    container_name: dbeaver
+    hostname: dbeaver
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 768M
+
+  # ------------------------------------------------------------------------------------
+  # f a k e s m t p
+  # ------------------------------------------------------------------------------------
+  fakesmtp:
+    image: gessnerfl/fake-smtp-server:1.10.4
+    ports:
+      - published: 5025
+        target: 5025
+      - published: 5080
+        target: 5080
+      - published: 5081
+        target: 5081
+    volumes:
+      - type: bind
+        source: C:/Zimmermann/volumes/fakesmtp
+        target: /tmp
+    environment:
+      TZ: Europe/Berlin
+      SPRING_OUTPUT_ANSI_ENABLED: ALWAYS
+      SPRING_MAIN_BANNER-MODE: LOG
+      SPRING_LAZY-INITIALIZATION: "true"
+      SPRING_JPA_OPEN-IN-VIEW: "true"
+    container_name: fakesmtp
+    hostname: fakesmtp
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 768M
+
+  # ------------------------------------------------------------------------------------
+  # b u c h
+  # ------------------------------------------------------------------------------------
+  buch:
+    image: juergenzimmermann/buch:2023.1.0
+    ports:
+      - published: 3000
+        target: 3000
+    volumes:
+      - type: bind
+        source: C:\Zimmermann\volumes\buch
+        target: /opt/app/log
+    env_file: [ "docker-compose.env" ]
+    environment:
+      # https://docs.docker.com/compose/compose-file/compose-file-v3/#variable-substitution
+      USER_PASSWORD_ENCODED: "$$argon2i$$v=19$$m=4096,t=3,p=1$$aaxA2v/9rRSPGkwYN+NQog$$27Huii1XtD3iEd62fog+04G26LRPZMHoYCI6AGKTL8M"
+    container_name: buch
+    hostname: buch
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1024M
