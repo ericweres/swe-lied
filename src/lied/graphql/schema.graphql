@@ -1,0 +1,86 @@
+# Copyright (C) 2021 - present Juergen Zimmermann, Hochschule Karlsruhe
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# siehe app.module.ts
+
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+"Funktionen, um Bücherdaten zu lesen"
+type Query {
+  lieder(titel: String): [Lied!]
+
+  lied(id: ID!): Lied
+}
+
+"Funktionen, um Bücher neu anzulegen, zu aktualisieren oder zu löschen"
+type Mutation {
+  create(input: LiedInput!): String
+
+  update(input: LiedUpdateInput!): Int
+
+  delete(id: ID!): Boolean
+}
+
+"Datenschema zu einem Buch, das gelesen wird"
+type Lied {
+  id: Int! #oder ID?
+  version: Int!
+  rating: Int
+  art: Art
+  datum: String
+  schlagwoerter: [String]
+  titel: String!
+  kuenstler: Kuenstler[]
+  #erzeugt/aktualisiert?
+}
+
+type Kuenstler {
+  id: Int!
+  name: String!
+}
+
+"Enum-Typ für die Art eines Buches"
+enum Art {
+  CD
+  MP3
+}
+
+"Daten für ein neues Buch"
+input LiedInput {
+  version: Int!
+  rating: Int
+  art: Art
+  datum: String
+  schlagwoerter: [String]
+  titel: String!
+  kuenstler: [KuenstlerInput!]
+}
+
+input KuenstlerInput {
+  name: String
+}
+
+"Daten für ein zu änderndes Buch"
+input LiedUpdateInput {
+  version: Int!
+  rating: Int
+  art: Art
+  datum: String
+  schlagwoerter: [String]
+  titel: String!
+}
