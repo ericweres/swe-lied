@@ -40,6 +40,7 @@ plugins:
 
 extends:
   # https://github.com/typescript-eslint/typescript-eslint/blob/main/packages/eslint-plugin/src/configs/eslint-recommended.ts
+  # https://typescript-eslint.io/rules
   - plugin:@typescript-eslint/recommended
   # https://github.com/eslint/eslint/blob/main/conf/eslint-recommended.js
   - eslint:recommended
@@ -161,6 +162,7 @@ rules:
     - ignoreArrowShorthand: true
   '@typescript-eslint/no-dupe-class-members': error
   '@typescript-eslint/no-duplicate-enum-values': error
+  '@typescript-eslint/no-duplicate-type-constituents': error
   '@typescript-eslint/no-dynamic-delete': error
   '@typescript-eslint/no-empty-function':
     - error
@@ -211,6 +213,7 @@ rules:
   '@typescript-eslint/no-unsafe-argument': error
   '@typescript-eslint/no-unsafe-assignment': error
   #"@typescript-eslint/no-unsafe-call": error
+  '@typescript-eslint/no-unsafe-enum-comparison': error
   #"@typescript-eslint/no-unsafe-member-access": error
   '@typescript-eslint/no-unsafe-return': error
   #'@typescript-eslint/no-untyped-public-signature': error

@@ -24,7 +24,7 @@ pipeline {
     agent {
         docker {
             // https://www.debian.org/releases: Bullseye = Debian 11
-            image 'node:19.7.0-bullseye'
+            image 'node:20.0.0-bullseye'
             // https://stackoverflow.com/questions/62330354/jenkins-pipeline-alpine-agent-apk-update-error-unable-to-lock-database-permis
             // https://stackoverflow.com/questions/42630894/jenkins-docker-how-to-control-docker-user-when-using-image-inside-command/51986870#51986870
             // https://stackoverflow.com/questions/42743201/npm-install-fails-in-jenkins-pipeline-in-docker
@@ -40,9 +40,9 @@ pipeline {
     // Umgebungsvariable:
     environment {
         // Cloud:
-        DB_HOST = '?????.amazonaws.com'
-        DB_USER = '?????'
-        DB_PASS = '?????'
+        DB_HOST = 'unknown.amazonaws.com'
+        DB_USER = 'nobody'
+        DB_PASS = 'ChangeMe'
         DB_POPULATE = true
 
         LOG_DIR = './log'
@@ -53,7 +53,7 @@ pipeline {
 
     options {
       // Timeout fuer den gesamten Job
-        timeout(time: 60, unit: 'MINUTES')
+        timeout time: 60, unit: 'MINUTES'
     }
 
     stages {
@@ -95,13 +95,6 @@ pipeline {
                 //sh 'lsb_release -a'
                 sh 'cat /etc/os-release'
                 sh 'cat /etc/debian_version'
-                //sh 'docker --version'
-                sh 'apt update'
-
-                sh 'curl --silent --fail --show-error --location https://deb.nodesource.com/setup_19.x | bash -; apt install --no-install-recommends --yes --show-progress nodejs'
-                sh 'node --version'
-                sh 'npm i -g npm'
-                sh 'npm --version'
 
                 // https://packages.debian.org/stable/python/python3
                 // https://packages.debian.org/bullseye/python3
@@ -109,21 +102,33 @@ pipeline {
                 // https://cloudcone.com/docs/article/how-to-install-python-3-10-on-debian-11
                 // https://linuxhint.com/install-python-debian-10
                 // https://computingforgeeks.com/how-to-install-python-on-debian-linux
-                sh 'apt install --no-install-recommends --yes --show-progress python3-minimal'
+                sh 'apt-get install --no-install-recommends --yes --show-progress gcc g++ make python3-minimal'
                 sh 'python3 --version'
+
+                sh 'curl --silent --fail --show-error --location https://deb.nodesource.com/setup_20.x | bash -; apt-get install --no-install-recommends --yes --show-progress nodejs'
+                sh 'node --version'
+                sh 'npm i -g npm'
+                sh 'npm --version'
+
+                sh 'apt-get update --yes'
+                sh 'apt-get upgrade --yes'
 
                 script {
                     if (!fileExists("${env.WORKSPACE}/package.json")) {
-                        echo "package.json ist *NICHT* in ${env.WORKSPACE} vorhanden"
+                        error "package.json ist *NICHT* in ${env.WORKSPACE} vorhanden"
                     }
                 }
 
-                // "clean install", Dauer: ca. 5 Minuten
+                // sh "apt-get install --yes sed"
+                sh "sed -i '/@nestjs\\/schematics/d' package.json"
+                sh "sed -i '/\"ts-node\":/d' package.json"
+                sh "sed -i '/\"ts-jest\":/d' package.json"
+                sh "sed -i '/\"typedoc\":/d' package.json"
+                sh 'cat package.json'
                 sh 'npm ci --omit=dev --no-package-lock --force'
-                sh 'npm r -D ts-jest --no-package-lock --force'
-                sh 'npm i -D typescript@rc --no-package-lock --force'
+                sh 'npm i -D typescript@beta --no-package-lock --force'
                 sh 'npm audit --omit dev fix --force'
-                sh 'npm i -D ts-jest --no-package-lock --force'
+                sh 'npm i -D ts-node ts-jest typedoc --no-package-lock --force'
             }
         }
 
@@ -171,14 +176,14 @@ pipeline {
                   echo 'TODO: Links fuer Coverage und TypeDoc'
 
                   publishHTML (target : [
-                    reportDir: 'extras/doc/entwicklerhandbuch/html',
+                    reportDir: '.extras/doc/entwicklerhandbuch/html',
                     reportFiles: 'entwicklerhandbuch.html',
                     reportName: 'Entwicklerhandbuch',
                     reportTitles: 'Entwicklerhandbuch'
                   ])
 
                   publishHTML target : [
-                   reportDir: 'extras/doc/folien',
+                   reportDir: '.extras/doc/folien',
                    reportFiles: 'folien.html',
                    reportName: 'Folien (reveal.js)',
                    reportTitles: 'reveal.js'
@@ -192,7 +197,7 @@ pipeline {
                   //]
 
                   //publishHTML target : [
-                  // reportDir: 'extras/doc/api',
+                  // reportDir: '.extras/doc/api',
                   // reportFiles: 'index.html',
                   // reportName: 'TypeDoc',
                   // reportTitles: 'TypeDoc'
