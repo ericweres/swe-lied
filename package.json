@@ -8,8 +8,8 @@
   "exports": "./dist/src/main.js",
   "type": "module",
   "engines": {
-    "node": ">=19.7.0",
-    "npm": ">=9.6.0"
+    "node": ">=20.0.0",
+    "npm": ">=9.6.5"
   },
   "scripts": {
     "prebuild": "npm run clean",
@@ -21,7 +21,8 @@
     "test:ORIG": "jest",
     "pretest": "npm run copy-resources",
     "test": "set LOG_DEFAULT=true&& set START_DB_SERVER=false&& jest --runInBand",
-    "test:istanbul": "npm t -- --coverage",
+    "test:coverage": "npm t -- --coverage",
+    "test:istanbul": "npm run coverage",
     "test:detectOpenHandles": "set LOG_DEFAULT=true&& jest --runInBand --detectOpenHandles",
     "test:forceExit": "set LOG_DEFAULT=true&& jest --runInBand --forceExit",
     "test:logdebug": "jest --runInBand",

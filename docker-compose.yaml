@@ -86,7 +86,7 @@ services:
   # ------------------------------------------------------------------------------------
   # http://localhost:8888 mit Emailadresse "pgadmin@acme.com" und Passwort "p"
   pgadmin:
-    image: dpage/pgadmin4:6.21
+    image: dpage/pgadmin4:7.0
     ports:
       - published: 8888
         target: 80
@@ -114,7 +114,7 @@ services:
   # M y S Q L
   # ------------------------------------------------------------------------------------
   mysql:
-    image: mysql:8.0.32-oracle
+    image: mysql:8.0.33-oracle
     ports:
       - published: 3306
         target: 3306
@@ -200,7 +200,7 @@ services:
   # ------------------------------------------------------------------------------------
   # als User "cbadmin" muss man eine DB-Verbindung und einen User einrichten
   dbeaver:
-    image: dbeaver/cloudbeaver:23.0.0
+    image: dbeaver/cloudbeaver:23.0.3
     links: [ mysql ]
     ports:
       - published: 8978
@@ -223,14 +223,14 @@ services:
   # f a k e s m t p
   # ------------------------------------------------------------------------------------
   fakesmtp:
-    image: gessnerfl/fake-smtp-server:1.10.4
+    image: gessnerfl/fake-smtp-server:2.0.1
     ports:
       - published: 5025
         target: 5025
       - published: 5080
-        target: 5080
+        target: 8080
       - published: 5081
-        target: 5081
+        target: 8081
     volumes:
       - type: bind
         source: C:/Zimmermann/volumes/fakesmtp
