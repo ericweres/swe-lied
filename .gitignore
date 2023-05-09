@@ -66,3 +66,5 @@ snyk-*.log
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+package.json
+package-lock.json
