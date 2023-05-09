@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-magic-numbers */
 /*
  * Copyright (C) 2023 - present Juergen Zimmermann, Florian Goebel, Hochschule Karlsruhe
  *
@@ -16,18 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Das Modul besteht aus der Entity-Klasse.
- * @packageDocumentation
- */
+import { Kuenstler } from './kuenstler.entity.js';
+import { Lied } from './lied.entity.js';
 
-import { MaxLength } from 'class-validator';
-
-/**
- * Entity-Klasse für Titel ohne TypeORM.
- */
-export class KuenstlerDTO {
-    @MaxLength(40)
-    readonly name!: string;
-}
-/* eslint-enable @typescript-eslint/no-magic-numbers */
+// erforderlich in src/config/db.ts und src/buch/buch.module.ts
+export const entities = [Kuenstler, Lied];

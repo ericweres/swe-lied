@@ -19,12 +19,12 @@
  * Das Modul enthält die Konfiguration für den Zugriff auf die DB.
  * @packageDocumentation
  */
-import { Buch } from '../buch/entity/buch.entity.js';
+import { Lied } from '../lied/entity/lied.entity.js';
 import { type DataSourceOptions } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { type TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { dbType } from './dbtype.js';
-import { entities } from '../buch/entity/entities.js';
+import { entities } from '../lied/entity/entities.js';
 import { env } from './env.js';
 import { k8sConfig } from './kubernetes.js';
 import { loggerDefaultValue } from './logger.js';
@@ -40,11 +40,11 @@ const {
 } = env;
 
 // nullish coalescing
-const database = DB_NAME ?? Buch.name.toLowerCase();
+const database = DB_NAME ?? Lied.name.toLowerCase();
 const { detected } = k8sConfig;
 
 const host = detected ? dbType : DB_HOST ?? 'localhost';
-const username = DB_USERNAME ?? Buch.name.toLowerCase();
+const username = DB_USERNAME ?? Lied.name.toLowerCase();
 const pass = DB_PASSWORD ?? 'p';
 const passAdmin = DB_PASSWORD_ADMIN ?? 'p';
 

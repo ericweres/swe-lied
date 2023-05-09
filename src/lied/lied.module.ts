@@ -16,10 +16,10 @@
  */
 import { AuthModule } from '../security/auth/auth.module.js';
 import { LiedGetController } from './rest/lied-get.controller.js';
-import { BuchMutationResolver } from './graphql/lied-mutation.resolver.js';
-import { BuchQueryResolver } from './graphql/lied-query.resolver.js';
+import { LiedMutationResolver } from './graphql/lied-mutation.resolver.js';
+import { LiedQueryResolver } from './graphql/lied-query.resolver.js';
 import { LiedReadService } from './service/lied-read.service.js';
-import { BuchWriteController } from './rest/lied-write.controller.js';
+import { LiedWriteController } from './rest/lied-write.controller.js';
 import { LiedWriteService } from './service/lied-write.service.js';
 import { MailModule } from '../mail/mail.module.js';
 import { Module } from '@nestjs/common';
@@ -39,16 +39,16 @@ import { entities } from './entity/entities.js';
  */
 @Module({
     imports: [MailModule, TypeOrmModule.forFeature(entities), AuthModule],
-    controllers: [LiedGetController, BuchWriteController],
+    controllers: [LiedGetController, LiedWriteController],
     // Provider sind z.B. Service-Klassen fuer DI
     providers: [
         LiedReadService,
         LiedWriteService,
-        BuchQueryResolver,
-        BuchMutationResolver,
+        LiedQueryResolver,
+        LiedMutationResolver,
         QueryBuilder,
     ],
     // Export der Provider fuer DI in anderen Modulen
     exports: [LiedReadService, LiedWriteService],
 })
-export class BuchModule {}
+export class LiedModule {}

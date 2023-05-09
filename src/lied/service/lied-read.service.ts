@@ -33,7 +33,7 @@ export interface FindByIdParams {
     /** ID des gesuchten Buchs */
     id: number;
     /** Sollen die Abbildungen mitgeladen werden? */
-    mitAbbildungen?: boolean;
+    mitAuthoren?: boolean;
 }
 export interface Suchkriterien {
     readonly rating?: number;

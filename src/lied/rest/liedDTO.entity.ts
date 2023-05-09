@@ -24,24 +24,18 @@
 import {
     ArrayUnique,
     IsArray,
-    IsBoolean,
-    IsISBN,
     IsISO8601,
     IsInt,
     IsOptional,
-    IsPositive,
-    IsUrl,
     Matches,
     Max,
     Min,
     ValidateNested,
 } from 'class-validator';
-import { AbbildungDTO } from './abbildungDTO.entity.js';
 import { ApiProperty } from '@nestjs/swagger';
-import { BuchArt } from '../entity/buch.entity.js';
-import { TitelDTO, KuenstlerDTO } from './kuenstlerDTO.entity.js';
-import { Type } from 'class-transformer';
+import { KuenstlerDTO } from './kuenstlerDTO.entity.js';
 import { LiedArt } from '../entity/lied.entity.js';
+import { Type } from 'class-transformer';
 
 export const MAX_RATING = 5;
 

@@ -10,6 +10,7 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 import { Kuenstler } from './kuenstler.entity';
+import { dbType } from '../../config/dbtype';
 
 /**
  * Alias-Typ für gültige Strings bei der Art eines Buches.

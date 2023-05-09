@@ -26,14 +26,13 @@ import { ResponseTimeInterceptor } from '../../logger/response-time.interceptor.
 import { JwtAuthGraphQlGuard } from '../../security/auth/jwt/jwt-auth-graphql.guard.js';
 import { RolesAllowed } from '../../security/auth/roles/roles-allowed.decorator.js';
 import { RolesGraphQlGuard } from '../../security/auth/roles/roles-graphql.guard.js';
-import { Abbildung } from '../entity/abbildung.entity.js';
-import { Buch } from '../entity/buch.entity.js';
-import { type Titel } from '../entity/titel.entity.js';
-import { BuchDTO } from '../rest/liedDTO.entity.js';
+import { LiedDTO } from '../rest/liedDTO.entity.js';
 import { type CreateError, type UpdateError } from '../service/errors.js';
 import { LiedWriteService } from '../service/lied-write.service.js';
 
 import { type IdInput } from './lied-query.resolver.js';
+import { Lied } from '../entity/lied.entity.js';
+import { Kuenstler } from '../entity/kuenstler.entity.js';
 
 // Authentifizierung und Autorisierung durch
 //  GraphQL Shield
@@ -45,7 +44,7 @@ import { type IdInput } from './lied-query.resolver.js';
 //      https://github.com/AstrumU/graphql-authz
 //      https://www.the-guild.dev/blog/graphql-authz
 
-export class BuchUpdateDTO extends BuchDTO {
+export class LiedUpdateDTO extends LiedDTO {
     @IsNumberString()
     readonly id!: string;
 
@@ -57,10 +56,10 @@ export class BuchUpdateDTO extends BuchDTO {
 // alternativ: globale Aktivierung der Guards https://docs.nestjs.com/security/authorization#basic-rbac-implementation
 @UseGuards(JwtAuthGraphQlGuard, RolesGraphQlGuard)
 @UseInterceptors(ResponseTimeInterceptor)
-export class BuchMutationResolver {
+export class LiedMutationResolver {
     readonly #service: LiedWriteService;
 
-    readonly #logger = getLogger(BuchMutationResolver.name);
+    readonly #logger = getLogger(LiedMutationResolver.name);
 
     constructor(service: LiedWriteService) {
         this.#service = service;
@@ -68,16 +67,16 @@ export class BuchMutationResolver {
 
     @Mutation()
     @RolesAllowed('admin', 'mitarbeiter')
-    async create(@Args('input') buchDTO: BuchDTO) {
-        this.#logger.debug('create: buchDTO=%o', buchDTO);
+    async create(@Args('input') liedDTO: LiedDTO) {
+        this.#logger.debug('create: buchDTO=%o', liedDTO);
 
-        const buch = this.#buchDtoToBuch(buchDTO);
-        const result = await this.#service.create(buch);
+        const lied = this.#liedDtoToLied(liedDTO);
+        const result = await this.#service.create(lied);
         this.#logger.debug('createBuch: result=%o', result);
 
         if (Object.prototype.hasOwnProperty.call(result, 'type')) {
             throw new BadUserInputError(
-                this.#errorMsgCreateBuch(result as CreateError),
+                this.#errorMsgCreateLied(result as CreateError),
             );
         }
         return result;
@@ -85,19 +84,19 @@ export class BuchMutationResolver {
 
     @Mutation()
     @RolesAllowed('admin', 'mitarbeiter')
-    async update(@Args('input') buchDTO: BuchUpdateDTO) {
-        this.#logger.debug('update: buch=%o', buchDTO);
+    async update(@Args('input') liedDTO: LiedUpdateDTO) {
+        this.#logger.debug('update: buch=%o', liedDTO);
 
-        const buch = this.#buchUpdateDtoToBuch(buchDTO);
-        const versionStr = `"${buchDTO.version.toString()}"`;
+        const lied = this.#liedUpdateDtoToLied(liedDTO);
+        const versionStr = `"${liedDTO.version.toString()}"`;
 
         const result = await this.#service.update({
-            id: Number.parseInt(buchDTO.id, 10),
-            buch,
+            id: Number.parseInt(liedDTO.id, 10),
+            lied,
             version: versionStr,
         });
         if (typeof result === 'object') {
-            throw new BadUserInputError(this.#errorMsgUpdateBuch(result));
+            throw new BadUserInputError(this.#errorMsgUpdateLied(result));
         }
         this.#logger.debug('updateBuch: result=%d', result);
         return result;
@@ -113,70 +112,52 @@ export class BuchMutationResolver {
         return result;
     }
 
-    #buchDtoToBuch(buchDTO: BuchDTO): Buch {
-        const titelDTO = buchDTO.titel;
-        const titel: Titel = {
-            id: undefined,
-            titel: titelDTO.titel,
-            untertitel: titelDTO.untertitel,
-            buch: undefined,
-        };
-        const abbildungen = buchDTO.abbildungen?.map((abbildungDTO) => {
-            const abbildung: Abbildung = {
+    #liedDtoToLied(liedDTO: LiedDTO): Lied {
+        const kuenstler = liedDTO.kuestler?.map((kuenstlerDTO) => {
+            const kuenst: Kuenstler = {
                 id: undefined,
-                beschriftung: abbildungDTO.beschriftung,
-                contentType: abbildungDTO.contentType,
-                buch: undefined,
+                name: kuenstlerDTO.name,
+                lied: undefined,
             };
-            return abbildung;
+            return kuenst;
         });
-        const buch = {
+        const lied = {
             id: undefined,
+            titel: liedDTO.titel,
             version: undefined,
-            isbn: buchDTO.isbn,
-            rating: buchDTO.rating,
-            art: buchDTO.art,
-            preis: buchDTO.preis,
-            rabatt: buchDTO.rabatt,
-            lieferbar: buchDTO.lieferbar,
-            datum: buchDTO.datum,
-            homepage: buchDTO.homepage,
-            schlagwoerter: buchDTO.schlagwoerter,
-            titel,
-            abbildungen,
+            rating: liedDTO.rating,
+            art: liedDTO.art,
+            datum: liedDTO.datum,
+            schlagwoerter: liedDTO.schlagwoerter,
+            kuenstler,
+            abbildungen: kuenstler,
             erzeugt: undefined,
             aktualisiert: undefined,
         };
 
         // Rueckwaertsverweis
-        buch.titel.buch = buch;
-        return buch;
+        return lied;
     }
 
-    #buchUpdateDtoToBuch(buchDTO: BuchUpdateDTO): Buch {
+    #liedUpdateDtoToLied(liedDTO: LiedUpdateDTO): Lied {
         return {
             id: undefined,
             version: undefined,
-            isbn: buchDTO.isbn,
-            rating: buchDTO.rating,
-            art: buchDTO.art,
-            preis: buchDTO.preis,
-            rabatt: buchDTO.rabatt,
-            lieferbar: buchDTO.lieferbar,
-            datum: buchDTO.datum,
-            homepage: buchDTO.homepage,
-            schlagwoerter: buchDTO.schlagwoerter,
+            rating: liedDTO.rating,
+            art: liedDTO.art,
+            datum: liedDTO.datum,
+            schlagwoerter: liedDTO.schlagwoerter,
             titel: undefined,
-            abbildungen: undefined,
+            kuenstler: undefined,
             erzeugt: undefined,
             aktualisiert: undefined,
         };
     }
 
-    #errorMsgCreateBuch(err: CreateError) {
+    #errorMsgCreateLied(err: CreateError) {
         switch (err.type) {
-            case 'IsbnExists': {
-                return `Die ISBN ${err.isbn} existiert bereits`;
+            case 'TitelExists': {
+                return `Der Titel ${err.titel} existiert bereits`;
             }
             default: {
                 return 'Unbekannter Fehler';
@@ -184,9 +165,9 @@ export class BuchMutationResolver {
         }
     }
 
-    #errorMsgUpdateBuch(err: UpdateError) {
+    #errorMsgUpdateLied(err: UpdateError) {
         switch (err.type) {
-            case 'BuchNotExists': {
+            case 'LiedNotExists': {
                 return `Es gibt kein Buch mit der ID ${err.id}`;
             }
             case 'VersionInvalid': {
