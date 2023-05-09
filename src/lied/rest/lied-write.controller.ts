@@ -46,20 +46,19 @@ import {
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
-import { BuchDTO, BuchDtoOhneRef } from './liedDTO.entity.js';
+import { LiedDTO, LiedDtoOhneRef } from './liedDTO.entity.js';
 import { type CreateError, type UpdateError } from '../service/errors.js';
 import { Request, Response } from 'express';
-import { type Abbildung } from '../entity/abbildung.entity.js';
-import { type Buch } from '../entity/buch.entity.js';
-import { BuchWriteService } from '../service/lied-write.service.js';
+import { LiedWriteService } from '../service/lied-write.service.js';
 import { JwtAuthGuard } from '../../security/auth/jwt/jwt-auth.guard.js';
 import { ResponseTimeInterceptor } from '../../logger/response-time.interceptor.js';
 import { RolesAllowed } from '../../security/auth/roles/roles-allowed.decorator.js';
 import { RolesGuard } from '../../security/auth/roles/roles.guard.js';
-import { type Titel } from '../entity/titel.entity.js';
 import { getBaseUri } from './getBaseUri.js';
 import { getLogger } from '../../logger/logger.js';
 import { paths } from '../../config/paths.js';
+import { Lied } from '../entity/lied.entity.js';
+import { Kuenstler } from '../entity/kuenstler.entity.js';
 
 /**
  * Die Controller-Klasse für die Verwaltung von Bücher.
@@ -70,11 +69,11 @@ import { paths } from '../../config/paths.js';
 @ApiTags('Buch API')
 @ApiBearerAuth()
 export class BuchWriteController {
-    readonly #service: BuchWriteService;
+    readonly #service: LiedWriteService;
 
     readonly #logger = getLogger(BuchWriteController.name);
 
-    constructor(service: BuchWriteService) {
+    constructor(service: LiedWriteService) {
         this.#service = service;
     }
 
@@ -99,13 +98,13 @@ export class BuchWriteController {
     @ApiCreatedResponse({ description: 'Erfolgreich neu angelegt' })
     @ApiBadRequestResponse({ description: 'Fehlerhafte Buchdaten' })
     async create(
-        @Body() buchDTO: BuchDTO,
+        @Body() liedDto: LiedDTO,
         @Req() req: Request,
         @Res() res: Response,
     ): Promise<Response> {
-        this.#logger.debug('create: buchDTO=%o', buchDTO);
+        this.#logger.debug('create: buchDTO=%o', liedDto);
 
-        const buch = this.#buchDtoToBuch(buchDTO);
+        const buch = this.#liedDtoToLied(liedDto);
         const result = await this.#service.create(buch);
         if (Object.prototype.hasOwnProperty.call(result, 'type')) {
             return this.#handleCreateError(result as CreateError, res);
@@ -168,7 +167,7 @@ export class BuchWriteController {
         description: 'Header "If-Match" fehlt',
     })
     async update(
-        @Body() buchDTO: BuchDtoOhneRef,
+        @Body() liedDTO: LiedDtoOhneRef,
         @Param('id') id: number,
         @Headers('If-Match') version: string | undefined,
         @Res() res: Response,
@@ -176,7 +175,7 @@ export class BuchWriteController {
         this.#logger.debug(
             'update: id=%s, buchDTO=%o, version=%s',
             id,
-            buchDTO,
+            liedDTO,
             version,
         );
 
@@ -189,7 +188,7 @@ export class BuchWriteController {
                 .send(msg);
         }
 
-        const buch = this.#buchDtoOhneRefToBuch(buchDTO);
+        const buch = this.#liedDtoOhneRefToLied(liedDTO);
         const result = await this.#service.update({ id, buch, version });
         if (typeof result === 'object') {
             return this.#handleUpdateError(result, res);
@@ -234,88 +233,52 @@ export class BuchWriteController {
         return res.sendStatus(HttpStatus.NO_CONTENT);
     }
 
-    #buchDtoToBuch(buchDTO: BuchDTO): Buch {
-        const titelDTO = buchDTO.titel;
-        const titel: Titel = {
-            id: undefined,
-            titel: titelDTO.titel,
-            untertitel: titelDTO.untertitel,
-            buch: undefined,
-        };
-        const abbildungen = buchDTO.abbildungen?.map((abbildungDTO) => {
-            const abbildung: Abbildung = {
+    #liedDtoToLied(liedDTO: LiedDTO): Lied {
+        const kuenstler = liedDTO.kuestler?.map((kuenstlerDTO) => {
+            const kunst: Kuenstler = {
                 id: undefined,
-                beschriftung: abbildungDTO.beschriftung,
-                contentType: abbildungDTO.contentType,
-                buch: undefined,
+                name: kuenstlerDTO.name,
+                lied: undefined,
             };
-            return abbildung;
+            return kunst;
         });
-        const buch = {
+        const lied = {
             id: undefined,
             version: undefined,
-            isbn: buchDTO.isbn,
-            rating: buchDTO.rating,
-            art: buchDTO.art,
-            preis: buchDTO.preis,
-            rabatt: buchDTO.rabatt,
-            lieferbar: buchDTO.lieferbar,
-            datum: buchDTO.datum,
-            homepage: buchDTO.homepage,
-            schlagwoerter: buchDTO.schlagwoerter,
-            titel,
-            abbildungen,
+            rating: liedDTO.rating,
+            art: liedDTO.art,
+            datum: liedDTO.datum,
+            schlagwoerter: liedDTO.schlagwoerter,
+            kuenstler,
+            titel: liedDTO.titel,
             erzeugt: undefined,
             aktualisiert: undefined,
         };
-
         // Rueckwaertsverweise
-        buch.titel.buch = buch;
-        buch.abbildungen?.forEach((abbildung) => {
-            abbildung.buch = buch;
+        lied.kuenstler?.forEach((kuenst) => {
+            kuenst.lied = lied;
         });
-        return buch;
+        return lied;
     }
 
     #handleCreateError(err: CreateError, res: Response) {
         switch (err.type) {
-            case 'IsbnExists': {
-                return this.#handleIsbnExists(err.isbn, res);
-            }
-
             default: {
                 return res.sendStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
     }
 
-    #handleIsbnExists(
-        isbn: string | null | undefined,
-        res: Response,
-    ): Response {
-        const msg = `Die ISBN-Nummer "${isbn}" existiert bereits.`;
-        this.#logger.debug('#handleIsbnExists(): msg=%s', msg);
-        return res
-            .status(HttpStatus.UNPROCESSABLE_ENTITY)
-            .set('Content-Type', 'text/plain')
-            .send(msg);
-    }
-
-    #buchDtoOhneRefToBuch(buchDTO: BuchDtoOhneRef): Buch {
+    #liedDtoOhneRefToLied(liedDTO: LiedDtoOhneRef): Lied {
         return {
             id: undefined,
             version: undefined,
-            isbn: buchDTO.isbn,
-            rating: buchDTO.rating,
-            art: buchDTO.art,
-            preis: buchDTO.preis,
-            rabatt: buchDTO.rabatt,
-            lieferbar: buchDTO.lieferbar,
-            datum: buchDTO.datum,
-            homepage: buchDTO.homepage,
-            schlagwoerter: buchDTO.schlagwoerter,
+            rating: liedDTO.rating,
+            art: liedDTO.art,
+            datum: liedDTO.datum,
+            schlagwoerter: liedDTO.schlagwoerter,
             titel: undefined,
-            abbildungen: undefined,
+            kuenstler: undefined,
             erzeugt: undefined,
             aktualisiert: undefined,
         };
@@ -323,7 +286,7 @@ export class BuchWriteController {
 
     #handleUpdateError(err: UpdateError, res: Response): Response {
         switch (err.type) {
-            case 'BuchNotExists': {
+            case 'LiedNotExists': {
                 const { id } = err;
                 const msg = `Es gibt kein Buch mit der ID "${id}".`;
                 this.#logger.debug('#handleUpdateError: msg=%s', msg);

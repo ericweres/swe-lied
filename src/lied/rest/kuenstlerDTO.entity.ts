@@ -22,11 +22,12 @@
  */
 
 import { IsOptional, Matches, MaxLength } from 'class-validator';
+import { Lied } from '../entity/lied.entity';
 
 /**
  * Entity-Klasse für Titel ohne TypeORM.
  */
-export class kuenstlerDTO {
+export class KuenstlerDTO {
     @MaxLength(40)
     readonly name!: string;
 }

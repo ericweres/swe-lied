@@ -16,35 +16,34 @@
  */
 
 /**
- * Das Modul besteht aus der Klasse {@linkcode BuchWriteService} für die
+ * Das Modul besteht aus der Klasse {@linkcode LiedWriteService} für die
  * Schreiboperationen im Anwendungskern.
  * @packageDocumentation
  */
 
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import RE2 from 're2';
+import { Repository, type DeleteResult } from 'typeorm';
+import { getLogger } from '../../logger/logger.js';
+import { MailService } from '../../mail/mail.service.js';
+import { Kuenstler } from '../entity/kuenstler.entity.js';
+import { Lied } from '../entity/lied.entity.js';
 import {
-    type BuchNotExists,
     type CreateError,
+    type LiedNotExists,
     type UpdateError,
     type VersionInvalid,
     type VersionOutdated,
 } from './errors.js';
-import { type DeleteResult, Repository } from 'typeorm';
-import { Abbildung } from '../entity/abbildung.entity.js';
-import { Buch } from '../entity/buch.entity.js';
-import { BuchReadService } from './lied-read.service.js';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable } from '@nestjs/common';
-import { MailService } from '../../mail/mail.service.js';
-import RE2 from 're2';
-import { Titel } from '../entity/titel.entity.js';
-import { getLogger } from '../../logger/logger.js';
+import { LiedReadService } from './lied-read.service.js';
 
 /** Typdefinitionen zum Aktualisieren eines Buches mit `update`. */
 export interface UpdateParams {
     /** ID des zu aktualisierenden Buches. */
     id: number | undefined;
     /** Buch-Objekt mit den aktualisierten Werten. */
-    buch: Buch;
+    buch: Lied;
     /** Versionsnummer für die aktualisierenden Werte. */
     version: string;
 }
@@ -54,20 +53,20 @@ export interface UpdateParams {
  * Schreiben von Bücher und greift mit _TypeORM_ auf die DB zu.
  */
 @Injectable()
-export class BuchWriteService {
+export class LiedWriteService {
     private static readonly VERSION_PATTERN = new RE2('^"\\d*"');
 
-    readonly #repo: Repository<Buch>;
+    readonly #repo: Repository<Lied>;
 
-    readonly #readService: BuchReadService;
+    readonly #readService: LiedReadService;
 
     readonly #mailService: MailService;
 
-    readonly #logger = getLogger(BuchWriteService.name);
+    readonly #logger = getLogger(LiedWriteService.name);
 
     constructor(
-        @InjectRepository(Buch) repo: Repository<Buch>,
-        readService: BuchReadService,
+        @InjectRepository(Lied) repo: Repository<Lied>,
+        readService: LiedReadService,
         mailService: MailService,
     ) {
         this.#repo = repo;
@@ -77,29 +76,29 @@ export class BuchWriteService {
 
     /**
      * Ein neues Buch soll angelegt werden.
-     * @param buch Das neu abzulegende Buch
+     * @param lied Das neu abzulegende Buch
      * @returns Die ID des neu angelegten Buches oder im Fehlerfall
      * [CreateError](../types/buch_service_errors.CreateError.html)
      */
-    async create(buch: Buch): Promise<CreateError | number> {
-        this.#logger.debug('create: buch=%o', buch);
-        const validateResult = await this.#validateCreate(buch);
+    async create(lied: Lied): Promise<CreateError | number> {
+        this.#logger.debug('create: buch=%o', lied);
+        const validateResult = await this.#validateCreate(lied);
         if (validateResult !== undefined) {
             return validateResult;
         }
 
         // implizite Transaktion
-        const buchDb = await this.#repo.save(buch); // implizite Transaktion
-        this.#logger.debug('create: buchDb=%o', buchDb);
+        const liedDb = await this.#repo.save(lied); // implizite Transaktion
+        this.#logger.debug('create: buchDb=%o', liedDb);
 
-        await this.#sendmail(buchDb);
+        await this.#sendmail(liedDb);
 
-        return buchDb.id!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+        return liedDb.id!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
     }
 
     /**
      * Ein vorhandenes Buch soll aktualisiert werden.
-     * @param buch Das zu aktualisierende Buch
+     * @param lied Das zu aktualisierende Buch
      * @param id ID des zu aktualisierenden Buchs
      * @param version Die Versionsnummer für optimistische Synchronisation
      * @returns Die neue Versionsnummer gemäß optimistischer Synchronisation
@@ -108,28 +107,28 @@ export class BuchWriteService {
     // https://2ality.com/2015/01/es6-destructuring.html#simulating-named-parameters-in-javascript
     async update({
         id,
-        buch,
+        buch: lied,
         version,
     }: UpdateParams): Promise<UpdateError | number> {
         this.#logger.debug(
             'update: id=%d, buch=%o, version=%s',
             id,
-            buch,
+            lied,
             version,
         );
         if (id === undefined) {
             this.#logger.debug('update: Keine gueltige ID');
-            return { type: 'BuchNotExists', id };
+            return { type: 'LiedNotExists', id };
         }
 
-        const validateResult = await this.#validateUpdate(buch, id, version);
+        const validateResult = await this.#validateUpdate(lied, id, version);
         this.#logger.debug('update: validateResult=%o', validateResult);
-        if (!(validateResult instanceof Buch)) {
+        if (!(validateResult instanceof Lied)) {
             return validateResult;
         }
 
         const buchNeu = validateResult;
-        const merged = this.#repo.merge(buchNeu, buch);
+        const merged = this.#repo.merge(buchNeu, lied);
         this.#logger.debug('update: merged=%o', merged);
         const updated = await this.#repo.save(merged); // implizite Transaktion
         this.#logger.debug('update: updated=%o', updated);
@@ -145,29 +144,25 @@ export class BuchWriteService {
      */
     async delete(id: number) {
         this.#logger.debug('delete: id=%d', id);
-        const buch = await this.#readService.findById({
+        const lied = await this.#readService.findById({
             id,
-            mitAbbildungen: true,
         });
-        if (buch === undefined) {
+        if (lied === undefined) {
             return false;
         }
 
         let deleteResult: DeleteResult | undefined;
+        //TODO remove deleting Kuenstler?
         await this.#repo.manager.transaction(async (transactionalMgr) => {
             // Das Buch zur gegebenen ID mit Titel und Abb. asynchron loeschen
 
             // TODO "cascade" funktioniert nicht beim Loeschen
-            const titelId = buch.titel?.id;
-            if (titelId !== undefined) {
-                await transactionalMgr.delete(Titel, titelId);
-            }
-            const abbildungen = buch.abbildungen ?? [];
-            for (const abbildung of abbildungen) {
-                await transactionalMgr.delete(Abbildung, abbildung.id);
+            const kuenstler = lied.kuenstler ?? [];
+            for (const kunst of kuenstler) {
+                await transactionalMgr.delete(Kuenstler, kunst.id);
             }
 
-            deleteResult = await transactionalMgr.delete(Buch, id);
+            deleteResult = await transactionalMgr.delete(Lied, id);
             this.#logger.debug('delete: deleteResult=%o', deleteResult);
         });
 
@@ -178,31 +173,31 @@ export class BuchWriteService {
         );
     }
 
-    async #validateCreate(buch: Buch): Promise<CreateError | undefined> {
-        this.#logger.debug('#validateCreate: buch=%o', buch);
+    async #validateCreate(lied: Lied): Promise<CreateError | undefined> {
+        this.#logger.debug('#validateCreate: buch=%o', lied);
 
-        const { isbn } = buch;
-        const buecher = await this.#readService.find({ isbn: isbn }); // eslint-disable-line object-shorthand
-        if (buecher.length > 0) {
-            return { type: 'IsbnExists', isbn };
+        const { titel } = lied;
+        const lieder = await this.#readService.find({ titel: titel }); // eslint-disable-line object-shorthand
+        if (lieder.length > 0) {
+            return { type: 'TitelExists', titel };
         }
 
         this.#logger.debug('#validateCreate: ok');
         return undefined;
     }
 
-    async #sendmail(buch: Buch) {
-        const subject = `Neues Buch ${buch.id}`;
-        const titel = buch.titel?.titel ?? 'N/A';
-        const body = `Das Buch mit dem Titel <strong>${titel}</strong> ist angelegt`;
+    async #sendmail(lied: Lied) {
+        const subject = `Neues Lied ${lied.id}`;
+        const kuenstler = lied.kuenstler?.at(0)?.name ?? 'N/A';
+        const body = `Das Lied vom Künstler <strong>${kuenstler}</strong> ist angelegt`;
         await this.#mailService.sendmail({ subject, body });
     }
 
     async #validateUpdate(
-        buch: Buch,
+        lied: Lied,
         id: number,
         versionStr: string,
-    ): Promise<Buch | UpdateError> {
+    ): Promise<Lied | UpdateError> {
         const result = this.#validateVersion(versionStr);
         if (typeof result !== 'number') {
             return result;
@@ -211,7 +206,7 @@ export class BuchWriteService {
         const version = result;
         this.#logger.debug(
             '#validateUpdate: buch=%o, version=%s',
-            buch,
+            lied,
             version,
         );
 
@@ -223,7 +218,7 @@ export class BuchWriteService {
     #validateVersion(version: string | undefined): VersionInvalid | number {
         if (
             version === undefined ||
-            !BuchWriteService.VERSION_PATTERN.test(version)
+            !LiedWriteService.VERSION_PATTERN.test(version)
         ) {
             const error: VersionInvalid = { type: 'VersionInvalid', version };
             this.#logger.debug('#validateVersion: VersionInvalid=%o', error);
@@ -236,16 +231,16 @@ export class BuchWriteService {
     async #findByIdAndCheckVersion(
         id: number,
         version: number,
-    ): Promise<Buch | BuchNotExists | VersionOutdated> {
-        const buchDb = await this.#readService.findById({ id });
-        if (buchDb === undefined) {
-            const result: BuchNotExists = { type: 'BuchNotExists', id };
+    ): Promise<Lied | LiedNotExists | VersionOutdated> {
+        const liedDb = await this.#readService.findById({ id });
+        if (liedDb === undefined) {
+            const result: LiedNotExists = { type: 'LiedNotExists', id };
             this.#logger.debug('#checkIdAndVersion: BuchNotExists=%o', result);
             return result;
         }
 
         // nullish coalescing
-        const versionDb = buchDb.version!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+        const versionDb = liedDb.version!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
         if (version < versionDb) {
             const result: VersionOutdated = {
                 type: 'VersionOutdated',
@@ -259,6 +254,6 @@ export class BuchWriteService {
             return result;
         }
 
-        return buchDb;
+        return liedDb;
     }
 }

@@ -39,7 +39,7 @@ import {
 import { AbbildungDTO } from './abbildungDTO.entity.js';
 import { ApiProperty } from '@nestjs/swagger';
 import { BuchArt } from '../entity/buch.entity.js';
-import { TitelDTO, kuenstlerDTO } from './kuenstlerDTO.entity.js';
+import { TitelDTO, KuenstlerDTO } from './kuenstlerDTO.entity.js';
 import { Type } from 'class-transformer';
 import { LiedArt } from '../entity/lied.entity.js';
 
@@ -82,9 +82,9 @@ export class LiedDTO extends LiedDtoOhneRef {
     @IsOptional()
     @IsArray()
     @ValidateNested({ each: true })
-    @Type(() => kuenstlerDTO)
+    @Type(() => KuenstlerDTO)
     @ApiProperty({ example: 'Die Abbildungen', type: String })
-    readonly kuestler: kuenstlerDTO[] | undefined;
+    readonly kuestler: KuenstlerDTO[] | undefined;
 
     // AbbildungDTO
 }

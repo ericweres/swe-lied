@@ -24,17 +24,17 @@
 /**
  * Klasse für eine bereits existierende ISBN-Nummer.
  */
-export interface IsbnExists {
-    readonly type: 'IsbnExists';
-    readonly isbn: string | null | undefined;
+export interface TitelExists {
+    readonly type: 'TitelExists';
+    readonly titel: string | null | undefined;
     readonly id?: number;
 }
 
 /**
  * ggf. Union-Type für diverse Fehler beim Neuanlegen eines Buches:
- * - {@linkcode IsbnExists}
+ * - {@linkcode TitelExists}
  */
-export type CreateError = IsbnExists;
+export type CreateError = TitelExists;
 
 /**
  * Klasse für eine ungültige Versionsnummer beim Ändern.
@@ -56,16 +56,16 @@ export interface VersionOutdated {
 /**
  * Klasse für ein nicht-vorhandenes Buch beim Ändern.
  */
-export interface BuchNotExists {
-    readonly type: 'BuchNotExists';
+export interface LiedNotExists {
+    readonly type: 'LiedNotExists';
     readonly id: number | undefined;
 }
 
 /**
  * Union-Type für Fehler beim Ändern eines Buches:
- * - {@linkcode BuchNotExists}
+ * - {@linkcode LiedNotExists}
  * - {@linkcode ConstraintViolations}
  * - {@linkcode VersionInvalid}
  * - {@linkcode VersionOutdated}
  */
-export type UpdateError = BuchNotExists | VersionInvalid | VersionOutdated;
+export type UpdateError = LiedNotExists | VersionInvalid | VersionOutdated;

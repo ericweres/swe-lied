@@ -16,15 +16,15 @@
  */
 
 /**
- * Das Modul besteht aus der Klasse {@linkcode BuchReadService}.
+ * Das Modul besteht aus der Klasse {@linkcode LiedReadService}.
  * @packageDocumentation
  */
 
-import { Buch, type BuchArt } from './../entity/buch.entity.js';
 import { Injectable } from '@nestjs/common';
-import { QueryBuilder } from './query-builder.js';
 import RE2 from 're2';
 import { getLogger } from '../../logger/logger.js';
+import { Lied, LiedArt } from '../entity/lied.entity.js';
+import { QueryBuilder } from './query-builder.js';
 
 /**
  * Typdefinition für `findById`
@@ -36,14 +36,9 @@ export interface FindByIdParams {
     mitAbbildungen?: boolean;
 }
 export interface Suchkriterien {
-    readonly isbn?: string;
     readonly rating?: number;
-    readonly art?: BuchArt;
-    readonly preis?: number;
-    readonly rabatt?: number;
-    readonly lieferbar?: boolean;
+    readonly art?: LiedArt;
     readonly datum?: string;
-    readonly homepage?: string;
     readonly javascript?: boolean;
     readonly typescript?: boolean;
     readonly titel?: string;
@@ -54,18 +49,18 @@ export interface Suchkriterien {
  * mit _TypeORM_ auf eine relationale DB zu.
  */
 @Injectable()
-export class BuchReadService {
+export class LiedReadService {
     static readonly ID_PATTERN = new RE2('^[1-9][\\d]*$');
 
-    readonly #buchProps: string[];
+    readonly #liedProps: string[];
 
     readonly #queryBuilder: QueryBuilder;
 
-    readonly #logger = getLogger(BuchReadService.name);
+    readonly #logger = getLogger(LiedReadService.name);
 
     constructor(queryBuilder: QueryBuilder) {
-        const buchDummy = new Buch();
-        this.#buchProps = Object.getOwnPropertyNames(buchDummy);
+        const liedDummy = new Lied();
+        this.#liedProps = Object.getOwnPropertyNames(liedDummy);
         this.#queryBuilder = queryBuilder;
     }
 
@@ -89,22 +84,20 @@ export class BuchReadService {
      *          Future aus Java)
      */
     // https://2ality.com/2015/01/es6-destructuring.html#simulating-named-parameters-in-javascript
-    async findById({ id, mitAbbildungen = false }: FindByIdParams) {
+    async findById({ id }: FindByIdParams) {
         this.#logger.debug('findById: id=%d', id);
 
         // https://typeorm.io/working-with-repository
         // Das Resultat ist undefined, falls kein Datensatz gefunden
         // Lesen: Keine Transaktion erforderlich
-        const buch = await this.#queryBuilder
-            .buildId({ id, mitAbbildungen })
-            .getOne();
-        if (buch === null) {
+        const lied = await this.#queryBuilder.buildId({ id }).getOne();
+        if (lied === null) {
             this.#logger.debug('findById: Kein Buch gefunden');
             return;
         }
 
-        this.#logger.debug('findById: buch=%o', buch);
-        return buch;
+        this.#logger.debug('findById: buch=%o', lied);
+        return lied;
     }
 
     /**
@@ -147,7 +140,7 @@ export class BuchReadService {
         let validKeys = true;
         keys.forEach((key) => {
             if (
-                !this.#buchProps.includes(key) &&
+                !this.#liedProps.includes(key) &&
                 key !== 'javascript' &&
                 key !== 'typescript'
             ) {

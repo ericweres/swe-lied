@@ -32,9 +32,8 @@ import {
     ApiResponse,
     ApiTags,
 } from '@nestjs/swagger';
-import { type Buch, type BuchArt } from '../entity/buch.entity.js';
 import {
-    BuchReadService,
+    LiedReadService,
     type Suchkriterien,
 } from '../service/lied-read.service.js';
 import {
@@ -50,10 +49,11 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ResponseTimeInterceptor } from '../../logger/response-time.interceptor.js';
-import { Titel } from '../entity/titel.entity.js';
 import { getBaseUri } from './getBaseUri.js';
 import { getLogger } from '../../logger/logger.js';
 import { paths } from '../../config/paths.js';
+import { Kuenstler } from '../entity/kuenstler.entity.js';
+import { Lied, LiedArt } from '../entity/lied.entity.js';
 
 /** href-Link für HATEOAS */
 export interface Link {
@@ -76,23 +76,23 @@ export interface Links {
 }
 
 /** Typedefinition für ein Titel-Objekt ohne Rückwärtsverweis zum Buch */
-export type TitelModel = Omit<Titel, 'buch' | 'id'>;
+export type KuenstlerModel = Omit<Kuenstler, 'id' | 'lied'>;
 
 /** Buch-Objekt mit HATEOAS-Links */
-export type BuchModel = Omit<
-    Buch,
-    'abbildungen' | 'aktualisiert' | 'erzeugt' | 'id' | 'titel' | 'version'
+export type LiedModel = Omit<
+    Lied,
+    'abbildungen' | 'aktualisiert' | 'erzeugt' | 'id' | 'kuenstler' | 'version'
 > & {
-    titel: TitelModel;
+    kuenstler: KuenstlerModel;
     // eslint-disable-next-line @typescript-eslint/naming-convention
     _links: Links;
 };
 
 /** Buch-Objekte mit HATEOAS-Links in einem JSON-Array. */
-export interface BuecherModel {
+export interface LiederModel {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     _embedded: {
-        buecher: BuchModel[];
+        lieder: LiedModel[];
     };
 }
 
@@ -106,30 +106,15 @@ export interface BuecherModel {
  * Außerdem muss noch `string` statt `Date` verwendet werden, weil es in OpenAPI
  * den Typ Date nicht gibt.
  */
-export class BuchQuery implements Suchkriterien {
-    @ApiProperty({ required: false })
-    declare readonly isbn: string;
-
+export class LiedQuery implements Suchkriterien {
     @ApiProperty({ required: false })
     declare readonly rating: number;
 
     @ApiProperty({ required: false })
-    declare readonly art: BuchArt;
-
-    @ApiProperty({ required: false })
-    declare readonly preis: number;
-
-    @ApiProperty({ required: false })
-    declare readonly rabatt: number;
-
-    @ApiProperty({ required: false })
-    declare readonly lieferbar: boolean;
+    declare readonly art: LiedArt;
 
     @ApiProperty({ required: false })
     declare readonly datum: string;
-
-    @ApiProperty({ required: false })
-    declare readonly homepage: string;
 
     @ApiProperty({ required: false })
     declare readonly javascript: boolean;
@@ -153,16 +138,16 @@ export class BuchQuery implements Suchkriterien {
 @ApiTags('Buch API')
 // @ApiBearerAuth()
 // Klassen ab ES 2015
-export class BuchGetController {
+export class LiedGetController {
     // readonly in TypeScript, vgl. C#
     // private ab ES 2019
-    readonly #service: BuchReadService;
+    readonly #service: LiedReadService;
 
-    readonly #logger = getLogger(BuchGetController.name);
+    readonly #logger = getLogger(LiedGetController.name);
 
     // Dependency Injection (DI) bzw. Constructor Injection
     // constructor(private readonly service: BuchReadService) {}
-    constructor(service: BuchReadService) {
+    constructor(service: LiedReadService) {
         this.#service = service;
     }
 
@@ -210,7 +195,7 @@ export class BuchGetController {
         @Req() req: Request,
         @Headers('If-None-Match') version: string | undefined,
         @Res() res: Response,
-    ): Promise<Response<BuchModel | undefined>> {
+    ): Promise<Response<LiedModel | undefined>> {
         this.#logger.debug('findById: id=%s, version=%s"', id, version);
 
         if (req.accepts(['json', 'html']) === false) {
@@ -218,10 +203,10 @@ export class BuchGetController {
             return res.sendStatus(HttpStatus.NOT_ACCEPTABLE);
         }
 
-        let buch: Buch | undefined;
+        let lied: Lied | undefined;
         try {
             // vgl. Kotlin: Aufruf einer suspend-Function
-            buch = await this.#service.findById({ id });
+            lied = await this.#service.findById({ id });
         } catch (err) {
             // err ist implizit vom Typ "unknown", d.h. keine Operationen koennen ausgefuehrt werden
             // Exception einer export async function bei der Ausfuehrung fangen:
@@ -230,14 +215,14 @@ export class BuchGetController {
             return res.sendStatus(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        if (buch === undefined) {
+        if (lied === undefined) {
             this.#logger.debug('findById: NOT_FOUND');
             return res.sendStatus(HttpStatus.NOT_FOUND);
         }
-        this.#logger.debug('findById(): buch=%o', buch);
+        this.#logger.debug('findById(): buch=%o', lied);
 
         // ETags
-        const versionDb = buch.version;
+        const versionDb = lied.version;
         if (version === `"${versionDb}"`) {
             this.#logger.debug('findById: NOT_MODIFIED');
             return res.sendStatus(HttpStatus.NOT_MODIFIED);
@@ -246,9 +231,9 @@ export class BuchGetController {
         res.header('ETag', `"${versionDb}"`);
 
         // HATEOAS mit Atom Links und HAL (= Hypertext Application Language)
-        const buchModel = this.#toModel(buch, req);
-        this.#logger.debug('findById: buchModel=%o', buchModel);
-        return res.json(buchModel);
+        const liedModel = this.#toModel(lied, req);
+        this.#logger.debug('findById: buchModel=%o', liedModel);
+        return res.json(liedModel);
     }
 
     /**
@@ -271,10 +256,10 @@ export class BuchGetController {
     @ApiOperation({ summary: 'Suche mit Suchkriterien', tags: ['Suchen'] })
     @ApiOkResponse({ description: 'Eine evtl. leere Liste mit Büchern' })
     async find(
-        @Query() query: BuchQuery,
+        @Query() query: LiedQuery,
         @Req() req: Request,
         @Res() res: Response,
-    ): Promise<Response<BuecherModel | undefined>> {
+    ): Promise<Response<LiederModel | undefined>> {
         this.#logger.debug('find: query=%o', query);
 
         if (req.accepts(['json', 'html']) === false) {
@@ -282,27 +267,27 @@ export class BuchGetController {
             return res.sendStatus(HttpStatus.NOT_ACCEPTABLE);
         }
 
-        const buecher = await this.#service.find(query);
-        this.#logger.debug('find: %o', buecher);
-        if (buecher.length === 0) {
+        const lieder = await this.#service.find(query);
+        this.#logger.debug('find: %o', lieder);
+        if (lieder.length === 0) {
             this.#logger.debug('find: NOT_FOUND');
             return res.sendStatus(HttpStatus.NOT_FOUND);
         }
 
         // HATEOAS: Atom Links je Buch
-        const buecherModel = buecher.map((buch) =>
+        const liederModel = lieder.map((buch) =>
             this.#toModel(buch, req, false),
         );
-        this.#logger.debug('find: buecherModel=%o', buecherModel);
+        this.#logger.debug('find: buecherModel=%o', liederModel);
 
-        const result: BuecherModel = { _embedded: { buecher: buecherModel } };
+        const result: LiederModel = { _embedded: { lieder: liederModel } };
         return res.json(result).send();
     }
 
-    #toModel(buch: Buch, req: Request, all = true) {
+    #toModel(lied: Lied, req: Request, all = true) {
         const baseUri = getBaseUri(req);
         this.#logger.debug('#toModel: baseUri=%s', baseUri);
-        const { id } = buch;
+        const { id } = lied;
         const links = all
             ? {
                   self: { href: `${baseUri}/${id}` },
@@ -313,28 +298,25 @@ export class BuchGetController {
               }
             : { self: { href: `${baseUri}/${id}` } };
 
-        this.#logger.debug('#toModel: buch=%o, links=%o', buch, links);
-        const titelModel: TitelModel = {
-            titel: buch.titel?.titel ?? 'N/A', // eslint-disable-line unicorn/consistent-destructuring
-            untertitel: buch.titel?.untertitel ?? 'N/A', // eslint-disable-line unicorn/consistent-destructuring
+        this.#logger.debug('#toModel: buch=%o, links=%o', lied, links);
+        const kuenstlerModel: KuenstlerModel[] = {
+            //TODO fix
+            kuenstler: lied.kuenstler, // eslint-disable-line unicorn/consistent-destructuring // eslint-disable-line unicorn/consistent-destructuring //TODO fix
         };
         /* eslint-disable unicorn/consistent-destructuring */
-        const buchModel: BuchModel = {
-            isbn: buch.isbn,
-            rating: buch.rating,
-            art: buch.art,
-            preis: buch.preis,
-            rabatt: buch.rabatt,
-            lieferbar: buch.lieferbar,
-            datum: buch.datum,
-            homepage: buch.homepage,
-            schlagwoerter: buch.schlagwoerter,
-            titel: titelModel,
+        const liedModel: LiedModel = {
+            rating: lied.rating,
+            art: lied.art,
+            datum: lied.datum,
+            schlagwoerter: lied.schlagwoerter,
+            //TODO fix
+            kuenstler: kuenstlerModel,
+            titel: lied.titel,
             _links: links,
         };
         /* eslint-enable unicorn/consistent-destructuring */
 
-        return buchModel;
+        return liedModel;
     }
 }
 /* eslint-enable max-lines */

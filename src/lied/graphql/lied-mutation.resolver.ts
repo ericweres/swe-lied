@@ -16,21 +16,24 @@
  */
 // eslint-disable-next-line max-classes-per-file
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { type CreateError, type UpdateError } from '../service/errors.js';
-import { IsInt, IsNumberString, Min } from 'class-validator';
 import { UseGuards, UseInterceptors } from '@nestjs/common';
-import { Abbildung } from '../entity/abbildung.entity.js';
+
 import { BadUserInputError } from './errors.js';
-import { Buch } from '../entity/buch.entity.js';
-import { BuchDTO } from '../rest/liedDTO.entity.js';
-import { BuchWriteService } from '../service/lied-write.service.js';
-import { type IdInput } from './lied-query.resolver.js';
-import { JwtAuthGraphQlGuard } from '../../security/auth/jwt/jwt-auth-graphql.guard.js';
+
+import { IsInt, IsNumberString, Min } from 'class-validator';
+import { getLogger } from '../../logger/logger.js';
 import { ResponseTimeInterceptor } from '../../logger/response-time.interceptor.js';
+import { JwtAuthGraphQlGuard } from '../../security/auth/jwt/jwt-auth-graphql.guard.js';
 import { RolesAllowed } from '../../security/auth/roles/roles-allowed.decorator.js';
 import { RolesGraphQlGuard } from '../../security/auth/roles/roles-graphql.guard.js';
+import { Abbildung } from '../entity/abbildung.entity.js';
+import { Buch } from '../entity/buch.entity.js';
 import { type Titel } from '../entity/titel.entity.js';
-import { getLogger } from '../../logger/logger.js';
+import { BuchDTO } from '../rest/liedDTO.entity.js';
+import { type CreateError, type UpdateError } from '../service/errors.js';
+import { LiedWriteService } from '../service/lied-write.service.js';
+
+import { type IdInput } from './lied-query.resolver.js';
 
 // Authentifizierung und Autorisierung durch
 //  GraphQL Shield
@@ -55,11 +58,11 @@ export class BuchUpdateDTO extends BuchDTO {
 @UseGuards(JwtAuthGraphQlGuard, RolesGraphQlGuard)
 @UseInterceptors(ResponseTimeInterceptor)
 export class BuchMutationResolver {
-    readonly #service: BuchWriteService;
+    readonly #service: LiedWriteService;
 
     readonly #logger = getLogger(BuchMutationResolver.name);
 
-    constructor(service: BuchWriteService) {
+    constructor(service: LiedWriteService) {
         this.#service = service;
     }
 

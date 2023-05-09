@@ -20,7 +20,7 @@
  * @packageDocumentation
  */
 
-import { BuchReadService } from '../service/lied-read.service.js';
+import { LiedReadService } from '../service/lied-read.service.js';
 import { type Request } from 'express';
 import { cloud } from '../../config/cloud.js';
 import { nodeConfig } from '../../config/node.js';
@@ -36,7 +36,7 @@ export const getBaseUri = (req: Request) => {
     const indexLastSlash = basePath.lastIndexOf('/');
     if (indexLastSlash > 0) {
         const idStr = basePath.slice(indexLastSlash + 1);
-        if (BuchReadService.ID_PATTERN.test(idStr)) {
+        if (LiedReadService.ID_PATTERN.test(idStr)) {
             basePath = basePath.slice(0, indexLastSlash);
         }
     }

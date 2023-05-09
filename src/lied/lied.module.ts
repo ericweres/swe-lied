@@ -15,12 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { AuthModule } from '../security/auth/auth.module.js';
-import { BuchGetController } from './rest/lied-get.controller.js';
+import { LiedGetController } from './rest/lied-get.controller.js';
 import { BuchMutationResolver } from './graphql/lied-mutation.resolver.js';
 import { BuchQueryResolver } from './graphql/lied-query.resolver.js';
-import { BuchReadService } from './service/lied-read.service.js';
+import { LiedReadService } from './service/lied-read.service.js';
 import { BuchWriteController } from './rest/lied-write.controller.js';
-import { BuchWriteService } from './service/lied-write.service.js';
+import { LiedWriteService } from './service/lied-write.service.js';
 import { MailModule } from '../mail/mail.module.js';
 import { Module } from '@nestjs/common';
 import { QueryBuilder } from './service/query-builder.js';
@@ -39,16 +39,16 @@ import { entities } from './entity/entities.js';
  */
 @Module({
     imports: [MailModule, TypeOrmModule.forFeature(entities), AuthModule],
-    controllers: [BuchGetController, BuchWriteController],
+    controllers: [LiedGetController, BuchWriteController],
     // Provider sind z.B. Service-Klassen fuer DI
     providers: [
-        BuchReadService,
-        BuchWriteService,
+        LiedReadService,
+        LiedWriteService,
         BuchQueryResolver,
         BuchMutationResolver,
         QueryBuilder,
     ],
     // Export der Provider fuer DI in anderen Modulen
-    exports: [BuchReadService, BuchWriteService],
+    exports: [LiedReadService, LiedWriteService],
 })
 export class BuchModule {}

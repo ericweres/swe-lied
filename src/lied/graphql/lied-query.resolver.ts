@@ -14,13 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { Args, Query, Resolver } from '@nestjs/graphql';
-import { type Buch } from '../entity/buch.entity.js';
-import { BadUserInputError } from './errors.js';
-import { BuchReadService } from '../service/lied-read.service.js';
-import { ResponseTimeInterceptor } from '../../logger/response-time.interceptor.js';
 import { UseInterceptors } from '@nestjs/common';
+import { Args, Query, Resolver } from '@nestjs/graphql';
 import { getLogger } from '../../logger/logger.js';
+import { ResponseTimeInterceptor } from '../../logger/response-time.interceptor.js';
+import { type Buch } from '../entity/buch.entity.js';
+import { LiedReadService } from '../service/lied-read.service.js';
+import { BadUserInputError } from './errors.js';
+import { Lied } from '../entity/lied.entity.js';
+import { LiedDTO } from '../rest/liedDTO.entity.js';
 
 export type BuchDTO = Omit<Buch, 'abbildungen' | 'aktualisiert' | 'erzeugt'>;
 export interface IdInput {
@@ -30,60 +32,54 @@ export interface IdInput {
 @Resolver()
 @UseInterceptors(ResponseTimeInterceptor)
 export class BuchQueryResolver {
-    readonly #service: BuchReadService;
+    readonly #service: LiedReadService;
 
     readonly #logger = getLogger(BuchQueryResolver.name);
 
-    constructor(service: BuchReadService) {
+    constructor(service: LiedReadService) {
         this.#service = service;
     }
 
     @Query()
-    async buch(@Args() idInput: IdInput) {
+    async lied(@Args() idInput: IdInput) {
         const { id } = idInput;
         this.#logger.debug('findById: id=%d', id);
 
-        const buch = await this.#service.findById({ id });
-        if (buch === undefined) {
+        const lied = await this.#service.findById({ id });
+        if (lied === undefined) {
             // https://www.apollographql.com/docs/apollo-server/data/errors
             throw new BadUserInputError(
                 `Es wurde kein Buch mit der ID ${id} gefunden.`,
             );
         }
-        const buchDTO = this.#toBuchDTO(buch);
-        this.#logger.debug('findById: buchDTO=%o', buchDTO);
-        return buchDTO;
+        const liedDTO = this.#toLiedDTO(lied);
+        this.#logger.debug('findById: buchDTO=%o', liedDTO);
+        return liedDTO;
     }
 
     @Query()
-    async buecher(@Args() titel: { titel: string } | undefined) {
+    async lieder(@Args() titel: { titel: string } | undefined) {
         const titelStr = titel?.titel;
         this.#logger.debug('find: titel=%s', titelStr);
         const suchkriterium = titelStr === undefined ? {} : { titel: titelStr };
-        const buecher = await this.#service.find(suchkriterium);
-        if (buecher.length === 0) {
+        const lieder = await this.#service.find(suchkriterium);
+        if (lieder.length === 0) {
             throw new BadUserInputError('Es wurden keine Buecher gefunden.');
         }
 
-        const buecherDTO = buecher.map((buch) => this.#toBuchDTO(buch));
-        this.#logger.debug('find: buecherDTO=%o', buecherDTO);
-        return buecherDTO;
+        const liederDTO = lieder.map((lied) => this.#toLiedDTO(lied));
+        this.#logger.debug('find: buecherDTO=%o', liederDTO);
+        return liederDTO;
     }
 
-    #toBuchDTO(buch: Buch): BuchDTO {
+    #toLiedDTO(lied: Lied): LiedDTO {
         return {
-            id: buch.id,
-            version: buch.version,
-            isbn: buch.isbn,
-            rating: buch.rating,
-            art: buch.art,
-            preis: buch.preis,
-            rabatt: buch.rabatt,
-            lieferbar: buch.lieferbar,
-            datum: buch.datum,
-            homepage: buch.homepage,
-            schlagwoerter: buch.schlagwoerter,
-            titel: buch.titel,
+            rating: lied.rating,
+            art: lied.art,
+            datum: lied.datum,
+            schlagwoerter: lied.schlagwoerter,
+            titel: lied.titel ?? 'N/A',
+            kuestler: lied.kuenstler,
         };
     }
 }
