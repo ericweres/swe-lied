@@ -16,9 +16,9 @@
  */
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { AuthService } from './service/auth.service.js';
+import { BadUserInputError } from '../../lied/graphql/errors.js';
 import { ResponseTimeInterceptor } from '../../logger/response-time.interceptor.js';
 import { UseInterceptors } from '@nestjs/common';
-import { BadUserInputError } from '../../buch/graphql/errors.js';
 import { getLogger } from '../../logger/logger.js';
 
 // @nestjs/graphql fasst die Input-Daten zu einem Typ zusammen

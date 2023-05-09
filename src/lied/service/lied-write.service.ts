@@ -43,7 +43,7 @@ export interface UpdateParams {
     /** ID des zu aktualisierenden Buches. */
     id: number | undefined;
     /** Buch-Objekt mit den aktualisierten Werten. */
-    buch: Lied;
+    lied: Lied;
     /** Versionsnummer für die aktualisierenden Werte. */
     version: string;
 }
@@ -107,7 +107,7 @@ export class LiedWriteService {
     // https://2ality.com/2015/01/es6-destructuring.html#simulating-named-parameters-in-javascript
     async update({
         id,
-        buch: lied,
+        lied,
         version,
     }: UpdateParams): Promise<UpdateError | number> {
         this.#logger.debug(
@@ -177,7 +177,7 @@ export class LiedWriteService {
         this.#logger.debug('#validateCreate: buch=%o', lied);
 
         const { titel } = lied;
-        const lieder = await this.#readService.find({ titel: titel }); // eslint-disable-line object-shorthand
+        const lieder = await this.#readService.find({ titel: titel ?? '' });
         if (lieder.length > 0) {
             return { type: 'TitelExists', titel };
         }

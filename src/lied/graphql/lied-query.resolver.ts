@@ -18,23 +18,21 @@ import { UseInterceptors } from '@nestjs/common';
 import { Args, Query, Resolver } from '@nestjs/graphql';
 import { getLogger } from '../../logger/logger.js';
 import { ResponseTimeInterceptor } from '../../logger/response-time.interceptor.js';
-import { type Buch } from '../entity/buch.entity.js';
 import { LiedReadService } from '../service/lied-read.service.js';
 import { BadUserInputError } from './errors.js';
 import { Lied } from '../entity/lied.entity.js';
-import { LiedDTO } from '../rest/liedDTO.entity.js';
 
-export type BuchDTO = Omit<Buch, 'abbildungen' | 'aktualisiert' | 'erzeugt'>;
+export type LiedDTO = Omit<Lied, 'aktualisiert' | 'erzeugt' | 'kuenstler'>;
 export interface IdInput {
     id: number;
 }
 
 @Resolver()
 @UseInterceptors(ResponseTimeInterceptor)
-export class BuchQueryResolver {
+export class LiedQueryResolver {
     readonly #service: LiedReadService;
 
-    readonly #logger = getLogger(BuchQueryResolver.name);
+    readonly #logger = getLogger(LiedQueryResolver.name);
 
     constructor(service: LiedReadService) {
         this.#service = service;
@@ -74,12 +72,13 @@ export class BuchQueryResolver {
 
     #toLiedDTO(lied: Lied): LiedDTO {
         return {
+            id: lied.id,
+            version: lied.version,
             rating: lied.rating,
             art: lied.art,
             datum: lied.datum,
             schlagwoerter: lied.schlagwoerter,
             titel: lied.titel ?? 'N/A',
-            kuestler: lied.kuenstler,
         };
     }
 }

@@ -76,14 +76,13 @@ export interface Links {
 }
 
 /** Typedefinition für ein Titel-Objekt ohne Rückwärtsverweis zum Buch */
-export type KuenstlerModel = Omit<Kuenstler, 'id' | 'lied'>;
+export type KuenstlerModel = Omit<Kuenstler[], 'id' | 'lied'>;
 
 /** Buch-Objekt mit HATEOAS-Links */
 export type LiedModel = Omit<
     Lied,
-    'abbildungen' | 'aktualisiert' | 'erzeugt' | 'id' | 'kuenstler' | 'version'
+    'aktualisiert' | 'erzeugt' | 'id' | 'kuenstler' | 'version'
 > & {
-    kuenstler: KuenstlerModel;
     // eslint-disable-next-line @typescript-eslint/naming-convention
     _links: Links;
 };
@@ -299,18 +298,12 @@ export class LiedGetController {
             : { self: { href: `${baseUri}/${id}` } };
 
         this.#logger.debug('#toModel: buch=%o, links=%o', lied, links);
-        const kuenstlerModel: KuenstlerModel[] = {
-            //TODO fix
-            kuenstler: lied.kuenstler, // eslint-disable-line unicorn/consistent-destructuring // eslint-disable-line unicorn/consistent-destructuring //TODO fix
-        };
         /* eslint-disable unicorn/consistent-destructuring */
         const liedModel: LiedModel = {
             rating: lied.rating,
             art: lied.art,
             datum: lied.datum,
             schlagwoerter: lied.schlagwoerter,
-            //TODO fix
-            kuenstler: kuenstlerModel,
             titel: lied.titel,
             _links: links,
         };

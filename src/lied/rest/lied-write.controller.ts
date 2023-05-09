@@ -68,10 +68,10 @@ import { Kuenstler } from '../entity/kuenstler.entity.js';
 @UseInterceptors(ResponseTimeInterceptor)
 @ApiTags('Buch API')
 @ApiBearerAuth()
-export class BuchWriteController {
+export class LiedWriteController {
     readonly #service: LiedWriteService;
 
-    readonly #logger = getLogger(BuchWriteController.name);
+    readonly #logger = getLogger(LiedWriteController.name);
 
     constructor(service: LiedWriteService) {
         this.#service = service;
@@ -189,7 +189,7 @@ export class BuchWriteController {
         }
 
         const buch = this.#liedDtoOhneRefToLied(liedDTO);
-        const result = await this.#service.update({ id, buch, version });
+        const result = await this.#service.update({ id, lied: buch, version });
         if (typeof result === 'object') {
             return this.#handleUpdateError(result, res);
         }
