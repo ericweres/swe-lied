@@ -9,8 +9,8 @@ import {
 } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
-import { Kuenstler } from './kuenstler.entity';
-import { dbType } from '../../config/dbtype';
+import { Kuenstler } from './kuenstler.entity.js';
+import { dbType } from '../../config/dbtype.js';
 
 /**
  * Alias-Typ für gültige Strings bei der Art eines Buches.
