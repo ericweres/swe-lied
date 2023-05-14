@@ -1,4 +1,4 @@
-/* eslint-disable max-classes-per-file, @typescript-eslint/no-magic-numbers */
+/* eslint-disable max-classes-per-file */
 /*
  * Copyright (C) 2016 - present Juergen Zimmermann, Florian Goebel, Hochschule Karlsruhe
  *
@@ -63,16 +63,15 @@ export class LiedDtoOhneRef {
     @ArrayUnique()
     @ApiProperty({ example: ['JAVASCRIPT', 'TYPESCRIPT'] })
     readonly schlagwoerter: string[] | undefined;
+
+    @ApiProperty({ example: 'Der Titel', type: String })
+    readonly titel!: string; //NOSONAR
 }
 
 /**
  * Entity-Klasse für Bücher ohne TypeORM.
  */
 export class LiedDTO extends LiedDtoOhneRef {
-    @ValidateNested()
-    @ApiProperty({ example: 'Der Titel', type: String })
-    readonly titel!: string; //NOSONAR
-
     @IsOptional()
     @IsArray()
     @ValidateNested({ each: true })

@@ -62,7 +62,6 @@ enum Art {
 
 "Daten für ein neues Buch"
 input LiedInput {
-  version: Int!
   rating: Int
   art: Art
   datum: String
@@ -77,6 +76,7 @@ input KuenstlerInput {
 
 "Daten für ein zu änderndes Buch"
 input LiedUpdateInput {
+  id: Int!
   version: Int!
   rating: Int
   art: Art
