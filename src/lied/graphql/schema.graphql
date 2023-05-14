@@ -45,7 +45,7 @@ type Lied {
   datum: String
   schlagwoerter: [String]
   titel: String!
-  kuenstler: Kuenstler[]
+  kuenstler: [Kuenstler]
   #erzeugt/aktualisiert?
 }
 

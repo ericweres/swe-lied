@@ -50,7 +50,7 @@ export class Lied {
     readonly schlagwoerter: string[] | undefined;
 
     // undefined wegen Updates
-    @Column('titel')
+    @Column('varchar')
     readonly titel: string | undefined;
 
     // undefined wegen Updates

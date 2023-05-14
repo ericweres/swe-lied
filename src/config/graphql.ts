@@ -20,7 +20,7 @@ import { existsSync } from 'node:fs';
 
 // im Docker-Image gibt es kein Unterverzeichnis "src"
 const BASE_PATH = existsSync('src') ? 'src' : 'dist';
-const SCHEMA_GRAPHQL = 'buch/graphql/schema.graphql';
+const SCHEMA_GRAPHQL = 'lied/graphql/schema.graphql';
 const LOGIN_GRAPHQL = 'security/auth/login.graphql';
 
 /**
