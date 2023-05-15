@@ -15,9 +15,7 @@
 
 -- https://www.postgresql.org/docs/current/sql-droptable.html
 
-DROP TABLE IF EXISTS abbildung CASCADE;
-DROP TABLE IF EXISTS titel CASCADE;
-DROP TABLE IF EXISTS buch CASCADE;
-
+DROP TABLE IF EXISTS kuenstler CASCADE;
+DROP TABLE IF EXISTS lied CASCADE;
 -- https://www.postgresql.org/docs/current/sql-droptype.html
-DROP TYPE IF EXISTS buchart;
+DROP TYPE IF EXISTS liedart;
