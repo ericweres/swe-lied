@@ -20,7 +20,7 @@ import path from 'node:path';
 
 const { copyFileSync, mkdirSync } = fs;
 const { copySync } = fsExtra;
-const { join } = path
+const { join } = path;
 
 // BEACHTE: "assets" innerhalb von nest-cli.json werden bei "--watch" NICHT beruecksichtigt
 // https://docs.nestjs.com/cli/monorepo#global-compiler-options
@@ -59,13 +59,19 @@ mkdirSync(jwtPemDist, { recursive: true });
 copySync(jwtPemSrc, jwtPemDist);
 
 // GraphQL-Schema kopieren
-const businessDir = 'buch'
+const businessDir = 'lied';
 const graphqlSrc = join(src, businessDir, 'graphql');
 const graphqlDist = join(dist, src, businessDir, 'graphql');
 mkdirSync(graphqlDist, { recursive: true });
-copyFileSync(join(graphqlSrc, 'schema.graphql'), join(graphqlDist, 'schema.graphql'));
+copyFileSync(
+    join(graphqlSrc, 'schema.graphql'),
+    join(graphqlDist, 'schema.graphql'),
+);
 
 const graphqlAuthSrc = join(src, 'security', 'auth');
 const graphqlAuthDist = join(dist, src, 'security', 'auth');
 mkdirSync(graphqlAuthDist, { recursive: true });
-copyFileSync(join(graphqlAuthSrc, 'login.graphql'), join(graphqlAuthDist, 'login.graphql'));
+copyFileSync(
+    join(graphqlAuthSrc, 'login.graphql'),
+    join(graphqlAuthDist, 'login.graphql'),
+);

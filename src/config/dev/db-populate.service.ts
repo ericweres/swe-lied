@@ -29,7 +29,6 @@ import {
 import { DataSource } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { configDir } from '../node.js';
-import { dbType } from '../dbtype.js';
 import { getLogger } from '../../logger/logger.js';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -42,7 +41,7 @@ import { resolve } from 'node:path';
  */
 @Injectable()
 export class DbPopulateService implements OnApplicationBootstrap {
-    readonly #tabellen = ['buch', 'titel', 'abbildung'];
+    readonly #tabellen = ['lied', 'kuenstler'];
 
     readonly #datasource: DataSource;
 
@@ -73,24 +72,7 @@ export class DbPopulateService implements OnApplicationBootstrap {
             typeOrmModuleOptions.type!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
         );
         this.#logger.warn(`${typeOrmModuleOptions.type}: DB wird neu geladen`);
-        switch (dbType) {
-            case 'postgres': {
-                await this.#populatePostgres(basePath);
-                break;
-            }
-            case 'mysql': {
-                await this.#populateMySQL(basePath);
-                break;
-            }
-            case 'sqlite': {
-                await this.#populateSQLite(basePath);
-                break;
-            }
-            default: {
-                await this.#populatePostgres(basePath);
-                break;
-            }
-        }
+        await this.#populatePostgres(basePath);
         this.#logger.warn('DB wurde neu geladen');
     }
 
@@ -118,66 +100,5 @@ export class DbPopulateService implements OnApplicationBootstrap {
             await dataSource.query(copyStmt.replace(/%TABELLE%/gu, tabelle));
         }
         await dataSource.destroy();
-    }
-
-    async #populateMySQL(basePath: string) {
-        // repo.query() kann bei MySQL nur 1 Anweisung mit "raw SQL" ausfuehren
-        const dropScript = resolve(basePath, 'drop.sql');
-        await this.#executeStatements(dropScript);
-
-        const createScript = resolve(basePath, 'create.sql');
-        await this.#executeStatements(createScript);
-
-        // https://typeorm.io/data-source
-        const dataSource = new DataSource(adminDataSourceOptions);
-        await dataSource.initialize();
-        await dataSource.query(
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            `USE ${adminDataSourceOptions.database};`,
-        );
-        const copyStmt =
-            "LOAD DATA INFILE '/var/lib/mysql-files/%TABELLE%.csv' " +
-            "INTO TABLE %TABELLE% FIELDS TERMINATED BY ';' " +
-            "ENCLOSED BY '\"' LINES TERMINATED BY '\\n' IGNORE 1 ROWS;";
-        for (const tabelle of this.#tabellen) {
-            await dataSource.query(copyStmt.replace(/%TABELLE%/gu, tabelle));
-        }
-        await dataSource.destroy();
-    }
-
-    async #populateSQLite(basePath: string) {
-        const dropScript = resolve(basePath, 'drop.sql');
-        // repo.query() kann bei SQLite nur 1 Anweisung mit "raw SQL" ausfuehren
-        await this.#executeStatements(dropScript);
-
-        const createScript = resolve(basePath, 'create.sql');
-        await this.#executeStatements(createScript);
-
-        const insertScript = resolve(basePath, 'insert.sql');
-        await this.#executeStatements(insertScript);
-    }
-
-    async #executeStatements(script: string) {
-        // https://stackoverflow.com/questions/6156501/read-a-file-one-line-at-a-time-in-node-js#answer-17332534
-        // alternativ: https://nodejs.org/api/fs.html#fspromisesopenpath-flags-mode
-        const statements: string[] = [];
-        let statement = '';
-        readFileSync(script, 'utf8') // eslint-disable-line security/detect-non-literal-fs-filename
-            // bei Zeilenumbruch einen neuen String erstellen
-            .split(/\r?\n/u)
-            // Kommentarzeilen entfernen
-            .filter((line) => !line.includes('--'))
-            // Eine Anweisung aus mehreren Zeilen bis zum Semikolon zusammenfuegen
-            .forEach((line) => {
-                statement += line;
-                if (line.endsWith(';')) {
-                    statements.push(statement);
-                    statement = '';
-                }
-            });
-
-        for (statement of statements) {
-            await this.#datasource.query(statement);
-        }
     }
 }
