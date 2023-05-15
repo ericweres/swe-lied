@@ -67,7 +67,7 @@ export class QueryBuilder {
     buildId({ id }: BuildIdParams) {
         const queryBuilder = this.#repo.createQueryBuilder(this.#liedAlias);
         queryBuilder.innerJoinAndSelect(
-            `${this.#liedAlias}.titel`,
+            `${this.#liedAlias}.kuenstler`,
             this.#kuenstlerAlias,
         );
         queryBuilder.where(`${this.#liedAlias}.id = :id`, { id: id }); // eslint-disable-line object-shorthand
