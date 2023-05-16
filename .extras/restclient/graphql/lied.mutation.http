@@ -128,16 +128,13 @@ X-REQUEST-TYPE: GraphQL
 mutation {
   update(
     input: {
-      id: 2,
+      id: "2",
       version: 0,
-      titel: "Update Titel"
+      titel: "Update Titel",
       rating: -1,
-      art: Schallplatte,
-      datum: "2022-01-31",
+      art: MP3,
+      datum: "1333-0331-31",
       schlagwoerter: ["JAVASCRIPT", "TYPESCRIPT"],
-      kuenstler: [{
-        name: "Neuer Kuenstler"
-      }]
     }
   )
 }
@@ -171,3 +168,23 @@ X-REQUEST-TYPE: GraphQL
 mutation {
   delete(id: "3")
 }
+
+### Test Lied 
+POST {{graphQlUrl}}
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.$.data.login.token}}
+X-REQUEST-TYPE: GraphQL
+
+mutation {
+                    create(
+                        input: {
+                            rating: -1,
+                            art: MP3,
+                            datum: "12345-123-123",
+                            titel: "Lied mit ungueltigen Werten neu anlegen",
+                            kuenstler: [{
+                                name: "KünstlerName",
+                            }]
+                        }
+                    )
+                }
