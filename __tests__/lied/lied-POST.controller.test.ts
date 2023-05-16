@@ -53,18 +53,6 @@ const neuesLiedInvalid: Record<string, unknown> = {
         name: 'Künstlerneu',
     }],
 };
-const neuesLiedTitelExistiert: LiedDTO = {
-    rating: 1,
-    art: 'MP3',
-    datum: '2022-02-28',
-    schlagwoerter: ['JAVASCRIPT', 'TYPESCRIPT'],
-    titel: "Titelneu",
-    kuestler: [
-        {
-            name: 'Künstlerneu',
-        },
-    ],
-};
 
 // -----------------------------------------------------------------------------
 // T e s t s
@@ -154,25 +142,6 @@ describe('POST /rest', () => {
         expect(messages).toBeDefined();
         expect(messages).toHaveLength(expectedMsg.length);
         expect(messages).toEqual(expect.arrayContaining(expectedMsg));
-    });
-
-    test.skip('Neues Lied, aber der Titel existiert bereits', async () => {
-        // given
-        const token = await loginRest(client);
-        headers.Authorization = `Bearer ${token}`;
-
-        // when
-        const response: AxiosResponse<string> = await client.post(
-            '/rest',
-            neuesLiedTitelExistiert,
-            { headers },
-        );
-
-        // then
-        const { status, data } = response;
-
-        expect(status).toBe(HttpStatus.UNPROCESSABLE_ENTITY);
-        expect(data).toEqual(expect.stringContaining('ISBN'));
     });
 
     test('Neues Lied, aber ohne Token', async () => {
