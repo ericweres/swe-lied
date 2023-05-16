@@ -102,7 +102,7 @@ export class QueryBuilder {
             const ilike =
                 typeOrmModuleOptions.type === 'postgres' ? 'ilike' : 'like';
             queryBuilder = queryBuilder.where(
-                `${this.#kuenstlerAlias}.name ${ilike} :name`, //TODO: check if that works
+                `${this.#liedAlias}.titel ${ilike} :name`, //TODO: check if that works
                 { name: `%${titel}%` },
             );
             useWhere = false;

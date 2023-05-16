@@ -90,22 +90,15 @@ POST {{graphQlUrl}}
 Content-Type: application/json
 X-REQUEST-TYPE: GraphQL
 
-query ($titel: String = "Alpha") {
+query ($titel: String = "Blue") {
   lieder(titel: $titel) {
         titel
-    version
-    rating
     art
-    datum
-    schlagwoerter
-    kuenstler {
-      name
-    }
   }
 }
 
 {
-  "titel": "Alpha"
+  "titel": "Ain"
 }
 
 ### Suche art, schlagwoerter und titel von Liedern mit vorhandenem Titel
