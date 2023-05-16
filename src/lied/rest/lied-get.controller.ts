@@ -75,10 +75,10 @@ export interface Links {
     remove?: Link;
 }
 
-/** Typedefinition für ein Titel-Objekt ohne Rückwärtsverweis zum Buch */
+/** Typedefinition für ein Titel-Objekt ohne Rückwärtsverweis zum Lied */
 export type KuenstlerModel = Omit<Kuenstler[], 'id' | 'lied'>;
 
-/** Buch-Objekt mit HATEOAS-Links */
+/** Lied-Objekt mit HATEOAS-Links */
 export type LiedModel = Omit<
     Lied,
     'aktualisiert' | 'erzeugt' | 'id' | 'version'
@@ -87,7 +87,7 @@ export type LiedModel = Omit<
     _links: Links;
 };
 
-/** Buch-Objekte mit HATEOAS-Links in einem JSON-Array. */
+/** Lied-Objekte mit HATEOAS-Links in einem JSON-Array. */
 export interface LiederModel {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     _embedded: {
@@ -96,9 +96,9 @@ export interface LiederModel {
 }
 
 /**
- * Klasse für `BuchGetController`, um Queries in _OpenAPI_ bzw. Swagger zu
- * formulieren. `BuchController` hat dieselben Properties wie die Basisklasse
- * `Buch` - allerdings mit dem Unterschied, dass diese Properties beim Ableiten
+ * Klasse für `LiedGetController`, um Queries in _OpenAPI_ bzw. Swagger zu
+ * formulieren. `LiedController` hat dieselben Properties wie die Basisklasse
+ * `Lied` - allerdings mit dem Unterschied, dass diese Properties beim Ableiten
  * so überschrieben sind, dass sie auch nicht gesetzt bzw. undefined sein
  * dürfen, damit die Queries flexibel formuliert werden können. Deshalb ist auch
  * immer der zusätzliche Typ undefined erforderlich.
@@ -134,7 +134,7 @@ export class LiedQuery implements Suchkriterien {
 @Controller(paths.rest)
 // @UseGuards(JwtAuthGuard, RolesGuard)
 @UseInterceptors(ResponseTimeInterceptor)
-@ApiTags('Buch API')
+@ApiTags('Lied API')
 // @ApiBearerAuth()
 // Klassen ab ES 2015
 export class LiedGetController {
@@ -145,22 +145,22 @@ export class LiedGetController {
     readonly #logger = getLogger(LiedGetController.name);
 
     // Dependency Injection (DI) bzw. Constructor Injection
-    // constructor(private readonly service: BuchReadService) {}
+    // constructor(private readonly service: LiedReadService) {}
     constructor(service: LiedReadService) {
         this.#service = service;
     }
 
     /**
-     * Ein Buch wird asynchron anhand seiner ID als Pfadparameter gesucht.
+     * Ein Lied wird asynchron anhand seiner ID als Pfadparameter gesucht.
      *
-     * Falls es ein solches Buch gibt und `If-None-Match` im Request-Header
-     * auf die aktuelle Version des Buches gesetzt war, wird der Statuscode
+     * Falls es ein solches Lied gibt und `If-None-Match` im Request-Header
+     * auf die aktuelle Version des Liedes gesetzt war, wird der Statuscode
      * `304` (`Not Modified`) zurückgeliefert. Falls `If-None-Match` nicht
      * gesetzt ist oder eine veraltete Version enthält, wird das gefundene
-     * Buch im Rumpf des Response als JSON-Datensatz mit Atom-Links für HATEOAS
+     * Lied im Rumpf des Response als JSON-Datensatz mit Atom-Links für HATEOAS
      * und dem Statuscode `200` (`OK`) zurückgeliefert.
      *
-     * Falls es kein Buch zur angegebenen ID gibt, wird der Statuscode `404`
+     * Falls es kein Lied zur angegebenen ID gibt, wird der Statuscode `404`
      * (`Not Found`) zurückgeliefert.
      *
      * @param id Pfad-Parameter `id`
@@ -173,7 +173,7 @@ export class LiedGetController {
      */
     // eslint-disable-next-line max-params, max-lines-per-function
     @Get(':id')
-    @ApiOperation({ summary: 'Suche mit der Buch-ID', tags: ['Suchen'] })
+    @ApiOperation({ summary: 'Suche mit der Lied-ID', tags: ['Suchen'] })
     @ApiParam({
         name: 'id',
         description: 'Z.B. 00000000-0000-0000-0000-000000000001',
@@ -183,11 +183,11 @@ export class LiedGetController {
         description: 'Header für bedingte GET-Requests, z.B. "0"',
         required: false,
     })
-    @ApiOkResponse({ description: 'Das Buch wurde gefunden' })
-    @ApiNotFoundResponse({ description: 'Kein Buch zur ID gefunden' })
+    @ApiOkResponse({ description: 'Das Lied wurde gefunden' })
+    @ApiNotFoundResponse({ description: 'Kein Lied zur ID gefunden' })
     @ApiResponse({
         status: HttpStatus.NOT_MODIFIED,
-        description: 'Das Buch wurde bereits heruntergeladen',
+        description: 'Das Lied wurde bereits heruntergeladen',
     })
     async findById(
         @Param('id') id: number,
@@ -218,7 +218,7 @@ export class LiedGetController {
             this.#logger.debug('findById: NOT_FOUND');
             return res.sendStatus(HttpStatus.NOT_FOUND);
         }
-        this.#logger.debug('findById(): buch=%o', lied);
+        this.#logger.debug('findById(): lied=%o', lied);
 
         // ETags
         const versionDb = lied.version;
@@ -231,17 +231,17 @@ export class LiedGetController {
 
         // HATEOAS mit Atom Links und HAL (= Hypertext Application Language)
         const liedModel = this.#toModel(lied, req);
-        this.#logger.debug('findById: buchModel=%o', liedModel);
+        this.#logger.debug('findById: liedModel=%o', liedModel);
         return res.json(liedModel);
     }
 
     /**
      * Bücher werden mit Query-Parametern asynchron gesucht. Falls es mindestens
-     * ein solches Buch gibt, wird der Statuscode `200` (`OK`) gesetzt. Im Rumpf
+     * ein solches Lied gibt, wird der Statuscode `200` (`OK`) gesetzt. Im Rumpf
      * des Response ist das JSON-Array mit den gefundenen Büchern, die jeweils
      * um Atom-Links für HATEOAS ergänzt sind.
      *
-     * Falls es kein Buch zu den Suchkriterien gibt, wird der Statuscode `404`
+     * Falls es kein Lied zu den Suchkriterien gibt, wird der Statuscode `404`
      * (`Not Found`) gesetzt.
      *
      * Falls es keine Query-Parameter gibt, werden alle Bücher ermittelt.
@@ -273,11 +273,11 @@ export class LiedGetController {
             return res.sendStatus(HttpStatus.NOT_FOUND);
         }
 
-        // HATEOAS: Atom Links je Buch
-        const liederModel = lieder.map((buch) =>
-            this.#toModel(buch, req, false),
+        // HATEOAS: Atom Links je Lied
+        const liederModel = lieder.map((lied) =>
+            this.#toModel(lied, req, false),
         );
-        this.#logger.debug('find: buecherModel=%o', liederModel);
+        this.#logger.debug('find: liederModel=%o', liederModel);
 
         const result: LiederModel = { _embedded: { lieder: liederModel } };
         return res.json(result).send();
@@ -297,7 +297,7 @@ export class LiedGetController {
               }
             : { self: { href: `${baseUri}/${id}` } };
 
-        this.#logger.debug('#toModel: buch=%o, links=%o', lied, links);
+        this.#logger.debug('#toModel: lied=%o, links=%o', lied, links);
         /* eslint-disable unicorn/consistent-destructuring */
         const liedModel: LiedModel = {
             rating: lied.rating,

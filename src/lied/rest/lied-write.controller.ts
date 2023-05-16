@@ -66,7 +66,7 @@ import { Kuenstler } from '../entity/kuenstler.entity.js';
 @Controller(paths.rest)
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UseInterceptors(ResponseTimeInterceptor)
-@ApiTags('Buch API')
+@ApiTags('Lied API')
 @ApiBearerAuth()
 export class LiedWriteController {
     readonly #service: LiedWriteService;
@@ -78,34 +78,34 @@ export class LiedWriteController {
     }
 
     /**
-     * Ein neues Buch wird asynchron angelegt. Das neu anzulegende Buch ist als
+     * Ein neues Lied wird asynchron angelegt. Das neu anzulegende Lied ist als
      * JSON-Datensatz im Request-Objekt enthalten. Wenn es keine
      * Verletzungen von Constraints gibt, wird der Statuscode `201` (`Created`)
      * gesetzt und im Response-Header wird `Location` auf die URI so gesetzt,
-     * dass damit das neu angelegte Buch abgerufen werden kann.
+     * dass damit das neu angelegte Lied abgerufen werden kann.
      *
      * Falls Constraints verletzt sind, wird der Statuscode `400` (`Bad Request`)
      * gesetzt und genauso auch wenn der Titel oder die ISBN-Nummer bereits
      * existieren.
      *
-     * @param buch JSON-Daten für ein Buch im Request-Body.
+     * @param lied JSON-Daten für ein Lied im Request-Body.
      * @param res Leeres Response-Objekt von Express.
      * @returns Leeres Promise-Objekt.
      */
     @Post()
     @RolesAllowed('admin', 'mitarbeiter')
-    @ApiOperation({ summary: 'Ein neues Buch anlegen' })
+    @ApiOperation({ summary: 'Ein neues Lied anlegen' })
     @ApiCreatedResponse({ description: 'Erfolgreich neu angelegt' })
-    @ApiBadRequestResponse({ description: 'Fehlerhafte Buchdaten' })
+    @ApiBadRequestResponse({ description: 'Fehlerhafte Lieddaten' })
     async create(
         @Body() liedDto: LiedDTO,
         @Req() req: Request,
         @Res() res: Response,
     ): Promise<Response> {
-        this.#logger.debug('create: buchDTO=%o', liedDto);
+        this.#logger.debug('create: liedDTO=%o', liedDto);
 
-        const buch = this.#liedDtoToLied(liedDto);
-        const result = await this.#service.create(buch);
+        const lied = this.#liedDtoToLied(liedDto);
+        const result = await this.#service.create(lied);
         if (Object.prototype.hasOwnProperty.call(result, 'type')) {
             return this.#handleCreateError(result as CreateError, res);
         }
@@ -116,11 +116,11 @@ export class LiedWriteController {
     }
 
     /**
-     * Ein vorhandenes Buch wird asynchron aktualisiert.
+     * Ein vorhandenes Lied wird asynchron aktualisiert.
      *
-     * Im Request-Objekt von Express muss die ID des zu aktualisierenden Buches
+     * Im Request-Objekt von Express muss die ID des zu aktualisierenden Liedes
      * als Pfad-Parameter enthalten sein. Außerdem muss im Rumpf das zu
-     * aktualisierende Buch als JSON-Datensatz enthalten sein. Damit die
+     * aktualisierende Lied als JSON-Datensatz enthalten sein. Damit die
      * Aktualisierung überhaupt durchgeführt werden kann, muss im Header
      * `If-Match` auf die korrekte Version für optimistische Synchronisation
      * gesetzt sein.
@@ -134,7 +134,7 @@ export class LiedWriteController {
      * Statuscode `400` (`Bad Request`) gesetzt und genauso auch wenn der neue
      * Titel oder die neue ISBN-Nummer bereits existieren.
      *
-     * @param buch Buchdaten im Body des Request-Objekts.
+     * @param lied Lieddaten im Body des Request-Objekts.
      * @param id Pfad-Paramater für die ID.
      * @param version Versionsnummer aus dem Header _If-Match_.
      * @param res Leeres Response-Objekt von Express.
@@ -144,7 +144,7 @@ export class LiedWriteController {
     @Put(':id')
     @RolesAllowed('admin', 'mitarbeiter')
     @ApiOperation({
-        summary: 'Ein vorhandenes Buch aktualisieren',
+        summary: 'Ein vorhandenes Lied aktualisieren',
         tags: ['Aktualisieren'],
     })
     @ApiHeader({
@@ -158,7 +158,7 @@ export class LiedWriteController {
         required: true,
     })
     @ApiNoContentResponse({ description: 'Erfolgreich aktualisiert' })
-    @ApiBadRequestResponse({ description: 'Fehlerhafte Buchdaten' })
+    @ApiBadRequestResponse({ description: 'Fehlerhafte Lieddaten' })
     @ApiPreconditionFailedResponse({
         description: 'Falsche Version im Header "If-Match"',
     })
@@ -173,7 +173,7 @@ export class LiedWriteController {
         @Res() res: Response,
     ): Promise<Response> {
         this.#logger.debug(
-            'update: id=%s, buchDTO=%o, version=%s',
+            'update: id=%s, liedDTO=%o, version=%s',
             id,
             liedDTO,
             version,
@@ -188,8 +188,8 @@ export class LiedWriteController {
                 .send(msg);
         }
 
-        const buch = this.#liedDtoOhneRefToLied(liedDTO);
-        const result = await this.#service.update({ id, lied: buch, version });
+        const lied = this.#liedDtoOhneRefToLied(liedDTO);
+        const result = await this.#service.update({ id, lied: lied, version });
         if (typeof result === 'object') {
             return this.#handleUpdateError(result, res);
         }
@@ -199,7 +199,7 @@ export class LiedWriteController {
     }
 
     /**
-     * Ein Buch wird anhand seiner ID-gelöscht, die als Pfad-Parameter angegeben
+     * Ein Lied wird anhand seiner ID-gelöscht, die als Pfad-Parameter angegeben
      * ist. Der zurückgelieferte Statuscode ist `204` (`No Content`).
      *
      * @param id Pfad-Paramater für die ID.
@@ -208,14 +208,14 @@ export class LiedWriteController {
      */
     @Delete(':id')
     @RolesAllowed('admin')
-    @ApiOperation({ summary: 'Buch mit der ID löschen', tags: ['Loeschen'] })
+    @ApiOperation({ summary: 'Lied mit der ID löschen', tags: ['Loeschen'] })
     @ApiHeader({
         name: 'Authorization',
         description: 'Header für JWT',
         required: true,
     })
     @ApiNoContentResponse({
-        description: 'Das Buch wurde gelöscht oder war nicht vorhanden',
+        description: 'Das Lied wurde gelöscht oder war nicht vorhanden',
     })
     async delete(
         @Param('id') id: number,
@@ -288,7 +288,7 @@ export class LiedWriteController {
         switch (err.type) {
             case 'LiedNotExists': {
                 const { id } = err;
-                const msg = `Es gibt kein Buch mit der ID "${id}".`;
+                const msg = `Es gibt kein Lied mit der ID "${id}".`;
                 this.#logger.debug('#handleUpdateError: msg=%s', msg);
                 return res
                     .status(HttpStatus.PRECONDITION_FAILED)

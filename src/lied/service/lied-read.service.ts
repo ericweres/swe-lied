@@ -30,7 +30,7 @@ import { QueryBuilder } from './query-builder.js';
  * Typdefinition für `findById`
  */
 export interface FindByIdParams {
-    /** ID des gesuchten Buchs */
+    /** ID des gesuchten Lieds */
     id: number;
     /** Sollen die Abbildungen mitgeladen werden? */
     mitAuthoren?: boolean;
@@ -45,7 +45,7 @@ export interface Suchkriterien {
 }
 
 /**
- * Die Klasse `BuchReadService` implementiert das Lesen für Bücher und greift
+ * Die Klasse `LiedReadService` implementiert das Lesen für Bücher und greift
  * mit _TypeORM_ auf eine relationale DB zu.
  */
 @Injectable()
@@ -77,9 +77,9 @@ export class LiedReadService {
     //              Im Promise-Objekt ist dann die Fehlerursache enthalten.
 
     /**
-     * Ein Buch asynchron anhand seiner ID suchen
-     * @param id ID des gesuchten Buches
-     * @returns Das gefundene Buch vom Typ [Buch](buch_entity_buch_entity.Buch.html) oder undefined
+     * Ein Lied asynchron anhand seiner ID suchen
+     * @param id ID des gesuchten Liedes
+     * @returns Das gefundene Lied vom Typ [Lied](lied_entity_lied_entity.Lied.html) oder undefined
      *          in einem Promise aus ES2015 (vgl.: Mono aus Project Reactor oder
      *          Future aus Java)
      */
@@ -92,11 +92,11 @@ export class LiedReadService {
         // Lesen: Keine Transaktion erforderlich
         const lied = await this.#queryBuilder.buildId({ id }).getOne();
         if (lied === null) {
-            this.#logger.debug('findById: Kein Buch gefunden');
+            this.#logger.debug('findById: Kein Lied gefunden');
             return;
         }
 
-        this.#logger.debug('findById: buch=%o', lied);
+        this.#logger.debug('findById: lied=%o', lied);
         return lied;
     }
 
@@ -110,15 +110,15 @@ export class LiedReadService {
 
         // Keine Suchkriterien?
         if (suchkriterien === undefined) {
-            const buecher = await this.#queryBuilder.build({}).getMany();
-            return buecher;
+            const lieder = await this.#queryBuilder.build({}).getMany();
+            return lieder;
         }
         const keys = Object.keys(suchkriterien);
         if (keys.length === 0) {
-            const buecher = await this.#queryBuilder
+            const lieder = await this.#queryBuilder
                 .build(suchkriterien)
                 .getMany();
-            return buecher;
+            return lieder;
         }
 
         // Falsche Namen fuer Suchkriterien?
@@ -129,14 +129,14 @@ export class LiedReadService {
         // QueryBuilder https://typeorm.io/select-query-builder
         // Das Resultat ist eine leere Liste, falls nichts gefunden
         // Lesen: Keine Transaktion erforderlich
-        const buecher = await this.#queryBuilder.build(suchkriterien).getMany();
-        this.#logger.debug('find: buecher=%o', buecher);
+        const lieder = await this.#queryBuilder.build(suchkriterien).getMany();
+        this.#logger.debug('find: lieder=%o', lieder);
 
-        return buecher;
+        return lieder;
     }
 
     #checkKeys(keys: string[]) {
-        // Ist jedes Suchkriterium auch eine Property von Buch oder "schlagwoerter"?
+        // Ist jedes Suchkriterium auch eine Property von Lied oder "schlagwoerter"?
         let validKeys = true;
         keys.forEach((key) => {
             if (

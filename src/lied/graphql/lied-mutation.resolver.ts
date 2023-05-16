@@ -68,11 +68,11 @@ export class LiedMutationResolver {
     @Mutation()
     @RolesAllowed('admin', 'mitarbeiter')
     async create(@Args('input') liedDTO: LiedDTO) {
-        this.#logger.debug('create: buchDTO=%o', liedDTO);
+        this.#logger.debug('create: liedDTO=%o', liedDTO);
 
         const lied = this.#liedDtoToLied(liedDTO);
         const result = await this.#service.create(lied);
-        this.#logger.debug('createBuch: result=%o', result);
+        this.#logger.debug('createLied: result=%o', result);
 
         if (Object.prototype.hasOwnProperty.call(result, 'type')) {
             throw new BadUserInputError(
@@ -85,7 +85,7 @@ export class LiedMutationResolver {
     @Mutation()
     @RolesAllowed('admin', 'mitarbeiter')
     async update(@Args('input') liedDTO: LiedUpdateDTO) {
-        this.#logger.debug('update: buch=%o', liedDTO);
+        this.#logger.debug('update: lied=%o', liedDTO);
 
         const lied = this.#liedUpdateDtoToLied(liedDTO);
         const versionStr = `"${liedDTO.version.toString()}"`;
@@ -98,7 +98,7 @@ export class LiedMutationResolver {
         if (typeof result === 'object') {
             throw new BadUserInputError(this.#errorMsgUpdateLied(result));
         }
-        this.#logger.debug('updateBuch: result=%d', result);
+        this.#logger.debug('updateLied: result=%d', result);
         return result;
     }
 
@@ -108,7 +108,7 @@ export class LiedMutationResolver {
         const idStr = id.id;
         this.#logger.debug('delete: id=%s', idStr);
         const result = await this.#service.delete(idStr);
-        this.#logger.debug('deleteBuch: result=%s', result);
+        this.#logger.debug('deleteLied: result=%s', result);
         return result;
     }
 
@@ -168,7 +168,7 @@ export class LiedMutationResolver {
     #errorMsgUpdateLied(err: UpdateError) {
         switch (err.type) {
             case 'LiedNotExists': {
-                return `Es gibt kein Buch mit der ID ${err.id}`;
+                return `Es gibt kein Lied mit der ID ${err.id}`;
             }
             case 'VersionInvalid': {
                 return `"${err.version}" ist keine gueltige Versionsnummer`;

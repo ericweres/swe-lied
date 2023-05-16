@@ -38,18 +38,18 @@ import {
 } from './errors.js';
 import { LiedReadService } from './lied-read.service.js';
 
-/** Typdefinitionen zum Aktualisieren eines Buches mit `update`. */
+/** Typdefinitionen zum Aktualisieren eines Liedes mit `update`. */
 export interface UpdateParams {
-    /** ID des zu aktualisierenden Buches. */
+    /** ID des zu aktualisierenden Liedes. */
     id: number | undefined;
-    /** Buch-Objekt mit den aktualisierten Werten. */
+    /** Lied-Objekt mit den aktualisierten Werten. */
     lied: Lied;
     /** Versionsnummer für die aktualisierenden Werte. */
     version: string;
 }
 
 /**
- * Die Klasse `BuchWriteService` implementiert den Anwendungskern für das
+ * Die Klasse `LiedWriteService` implementiert den Anwendungskern für das
  * Schreiben von Bücher und greift mit _TypeORM_ auf die DB zu.
  */
 @Injectable()
@@ -75,13 +75,13 @@ export class LiedWriteService {
     }
 
     /**
-     * Ein neues Buch soll angelegt werden.
-     * @param lied Das neu abzulegende Buch
-     * @returns Die ID des neu angelegten Buches oder im Fehlerfall
-     * [CreateError](../types/buch_service_errors.CreateError.html)
+     * Ein neues Lied soll angelegt werden.
+     * @param lied Das neu abzulegende Lied
+     * @returns Die ID des neu angelegten Liedes oder im Fehlerfall
+     * [CreateError](../types/lied_service_errors.CreateError.html)
      */
     async create(lied: Lied): Promise<CreateError | number> {
-        this.#logger.debug('create: buch=%o', lied);
+        this.#logger.debug('create: lied=%o', lied);
         const validateResult = await this.#validateCreate(lied);
         if (validateResult !== undefined) {
             return validateResult;
@@ -89,7 +89,7 @@ export class LiedWriteService {
 
         // implizite Transaktion
         const liedDb = await this.#repo.save(lied); // implizite Transaktion
-        this.#logger.debug('create: buchDb=%o', liedDb);
+        this.#logger.debug('create: liedDb=%o', liedDb);
 
         await this.#sendmail(liedDb);
 
@@ -97,12 +97,12 @@ export class LiedWriteService {
     }
 
     /**
-     * Ein vorhandenes Buch soll aktualisiert werden.
-     * @param lied Das zu aktualisierende Buch
-     * @param id ID des zu aktualisierenden Buchs
+     * Ein vorhandenes Lied soll aktualisiert werden.
+     * @param lied Das zu aktualisierende Lied
+     * @param id ID des zu aktualisierenden Lieds
      * @param version Die Versionsnummer für optimistische Synchronisation
      * @returns Die neue Versionsnummer gemäß optimistischer Synchronisation
-     *  oder im Fehlerfall [UpdateError](../types/buch_service_errors.UpdateError.html)
+     *  oder im Fehlerfall [UpdateError](../types/lied_service_errors.UpdateError.html)
      */
     // https://2ality.com/2015/01/es6-destructuring.html#simulating-named-parameters-in-javascript
     async update({
@@ -111,7 +111,7 @@ export class LiedWriteService {
         version,
     }: UpdateParams): Promise<UpdateError | number> {
         this.#logger.debug(
-            'update: id=%d, buch=%o, version=%s',
+            'update: id=%d, lied=%o, version=%s',
             id,
             lied,
             version,
@@ -127,8 +127,8 @@ export class LiedWriteService {
             return validateResult;
         }
 
-        const buchNeu = validateResult;
-        const merged = this.#repo.merge(buchNeu, lied);
+        const liedNeu = validateResult;
+        const merged = this.#repo.merge(liedNeu, lied);
         this.#logger.debug('update: merged=%o', merged);
         const updated = await this.#repo.save(merged); // implizite Transaktion
         this.#logger.debug('update: updated=%o', updated);
@@ -137,10 +137,10 @@ export class LiedWriteService {
     }
 
     /**
-     * Ein Buch wird asynchron anhand seiner ID gelöscht.
+     * Ein Lied wird asynchron anhand seiner ID gelöscht.
      *
-     * @param id ID des zu löschenden Buches
-     * @returns true, falls das Buch vorhanden war und gelöscht wurde. Sonst false.
+     * @param id ID des zu löschenden Liedes
+     * @returns true, falls das Lied vorhanden war und gelöscht wurde. Sonst false.
      */
     async delete(id: number) {
         this.#logger.debug('delete: id=%d', id);
@@ -154,7 +154,7 @@ export class LiedWriteService {
         let deleteResult: DeleteResult | undefined;
         //TODO remove deleting Kuenstler?
         await this.#repo.manager.transaction(async (transactionalMgr) => {
-            // Das Buch zur gegebenen ID mit Titel und Abb. asynchron loeschen
+            // Das Lied zur gegebenen ID mit Titel und Abb. asynchron loeschen
 
             // TODO "cascade" funktioniert nicht beim Loeschen
             const kuenstler = lied.kuenstler ?? [];
@@ -174,7 +174,7 @@ export class LiedWriteService {
     }
 
     async #validateCreate(lied: Lied): Promise<CreateError | undefined> {
-        this.#logger.debug('#validateCreate: buch=%o', lied);
+        this.#logger.debug('#validateCreate: lied=%o', lied);
 
         const { titel } = lied;
         const lieder = await this.#readService.find({ titel: titel ?? '' });
@@ -205,7 +205,7 @@ export class LiedWriteService {
 
         const version = result;
         this.#logger.debug(
-            '#validateUpdate: buch=%o, version=%s',
+            '#validateUpdate: lied=%o, version=%s',
             lied,
             version,
         );
@@ -235,7 +235,7 @@ export class LiedWriteService {
         const liedDb = await this.#readService.findById({ id });
         if (liedDb === undefined) {
             const result: LiedNotExists = { type: 'LiedNotExists', id };
-            this.#logger.debug('#checkIdAndVersion: BuchNotExists=%o', result);
+            this.#logger.debug('#checkIdAndVersion: LiedNotExists=%o', result);
             return result;
         }
 

@@ -13,7 +13,7 @@ import { Kuenstler } from './kuenstler.entity.js';
 import { dbType } from '../../config/dbtype.js';
 
 /**
- * Alias-Typ für gültige Strings bei der Art eines Buches.
+ * Alias-Typ für gültige Strings bei der Art eines Liedes.
  */
 export type LiedArt = 'CD' | 'MP3';
 

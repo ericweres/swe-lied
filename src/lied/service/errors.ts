@@ -31,7 +31,7 @@ export interface TitelExists {
 }
 
 /**
- * ggf. Union-Type für diverse Fehler beim Neuanlegen eines Buches:
+ * ggf. Union-Type für diverse Fehler beim Neuanlegen eines Liedes:
  * - {@linkcode TitelExists}
  */
 export type CreateError = TitelExists;
@@ -54,7 +54,7 @@ export interface VersionOutdated {
 }
 
 /**
- * Klasse für ein nicht-vorhandenes Buch beim Ändern.
+ * Klasse für ein nicht-vorhandenes Lied beim Ändern.
  */
 export interface LiedNotExists {
     readonly type: 'LiedNotExists';
@@ -62,7 +62,7 @@ export interface LiedNotExists {
 }
 
 /**
- * Union-Type für Fehler beim Ändern eines Buches:
+ * Union-Type für Fehler beim Ändern eines Liedes:
  * - {@linkcode LiedNotExists}
  * - {@linkcode ConstraintViolations}
  * - {@linkcode VersionInvalid}

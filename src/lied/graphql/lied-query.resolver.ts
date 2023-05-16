@@ -47,11 +47,11 @@ export class LiedQueryResolver {
         if (lied === undefined) {
             // https://www.apollographql.com/docs/apollo-server/data/errors
             throw new BadUserInputError(
-                `Es wurde kein Buch mit der ID ${id} gefunden.`,
+                `Es wurde kein Lied mit der ID ${id} gefunden.`,
             );
         }
         const liedDTO = this.#toLiedDTO(lied);
-        this.#logger.debug('findById: buchDTO=%o', liedDTO);
+        this.#logger.debug('findById: liedDTO=%o', liedDTO);
         return liedDTO;
     }
 
@@ -62,11 +62,11 @@ export class LiedQueryResolver {
         const suchkriterium = titelStr === undefined ? {} : { titel: titelStr };
         const lieder = await this.#service.find(suchkriterium);
         if (lieder.length === 0) {
-            throw new BadUserInputError('Es wurden keine Buecher gefunden.');
+            throw new BadUserInputError('Es wurden keine Lieder gefunden.');
         }
 
         const liederDTO = lieder.map((lied) => this.#toLiedDTO(lied));
-        this.#logger.debug('find: buecherDTO=%o', liederDTO);
+        this.#logger.debug('find: liederDTO=%o', liederDTO);
         return liederDTO;
     }
 

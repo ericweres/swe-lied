@@ -45,10 +45,10 @@ export class BannerService implements OnApplicationBootstrap {
             nodeConfig;
         const isK8s = k8sConfig.detected;
         const plattform = isK8s
-            ? `Kubernetes: BUCH_SERVICE_HOST=${serviceHost}, BUCH_SERVICE_PORT=${servicePort}`
+            ? `Kubernetes: LIED_SERVICE_HOST=${serviceHost}, LIED_SERVICE_PORT=${servicePort}`
             : 'Kubernetes: N/A';
 
-        figlet('buch', (_, data) => console.info(data));
+        figlet('lied', (_, data) => console.info(data));
         // https://nodejs.org/api/process.html
         // "Template String" ab ES 2015
         this.#logger.info('Node: %s', process.version);

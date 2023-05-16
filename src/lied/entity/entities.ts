@@ -18,5 +18,5 @@
 import { Kuenstler } from './kuenstler.entity.js';
 import { Lied } from './lied.entity.js';
 
-// erforderlich in src/config/db.ts und src/buch/buch.module.ts
+// erforderlich in src/config/db.ts und src/lied/lied.module.ts
 export const entities = [Kuenstler, Lied];

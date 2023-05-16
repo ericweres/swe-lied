@@ -30,9 +30,9 @@ import { getLogger } from '../../logger/logger.js';
 import { Kuenstler } from '../entity/kuenstler.entity.js';
 import { Lied } from '../entity/lied.entity.js';
 
-/** Typdefinitionen für die Suche mit der Buch-ID. */
+/** Typdefinitionen für die Suche mit der Lied-ID. */
 export interface BuildIdParams {
-    /** ID des gesuchten Buchs. */
+    /** ID des gesuchten Lieds. */
     id: number;
     /** Sollen die Abbildungen mitgeladen werden? */
     mitAbbildungen?: boolean;
@@ -60,8 +60,8 @@ export class QueryBuilder {
     }
 
     /**
-     * Ein Buch mit der ID suchen.
-     * @param id ID des gesuchten Buches
+     * Ein Lied mit der ID suchen.
+     * @param id ID des gesuchten Liedes
      * @returns QueryBuilder
      */
     buildId({ id }: BuildIdParams) {

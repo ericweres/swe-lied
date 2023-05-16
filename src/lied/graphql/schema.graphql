@@ -36,7 +36,7 @@ type Mutation {
   delete(id: ID!): Boolean
 }
 
-"Datenschema zu einem Buch, das gelesen wird"
+"Datenschema zu einem Lied, das gelesen wird"
 type Lied {
   id: ID
   version: Int!
@@ -54,13 +54,13 @@ type Kuenstler {
   name: String!
 }
 
-"Enum-Typ für die Art eines Buches"
+"Enum-Typ für die Art eines Liedes"
 enum Art {
   CD
   MP3
 }
 
-"Daten für ein neues Buch"
+"Daten für ein neues Lied"
 input LiedInput {
   rating: Int
   art: Art
@@ -74,7 +74,7 @@ input KuenstlerInput {
   name: String
 }
 
-"Daten für ein zu änderndes Buch"
+"Daten für ein zu änderndes Lied"
 input LiedUpdateInput {
   id: ID
   version: Int!
