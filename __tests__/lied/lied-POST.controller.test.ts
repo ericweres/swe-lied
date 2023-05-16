@@ -37,7 +37,7 @@ const neuesLied: LiedDTO = {
     art: 'MP3',
     datum: '2022-02-28',
     schlagwoerter: ['JAVASCRIPT', 'TYPESCRIPT'],
-    titel: "Titelneu",
+    titel: 'Titelneu',
     kuestler: [
         {
             name: 'Künstlerneu',
@@ -49,9 +49,11 @@ const neuesLiedInvalid: Record<string, unknown> = {
     art: 'UNSICHTBAR',
     datum: '12345-123-123',
     titel: '?!',
-    kuestler: [{
-        name: 'Künstlerneu',
-    }],
+    kuestler: [
+        {
+            name: 'Künstlerneu',
+        },
+    ],
 };
 
 // -----------------------------------------------------------------------------

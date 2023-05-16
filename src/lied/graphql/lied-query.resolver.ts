@@ -22,7 +22,7 @@ import { LiedReadService } from '../service/lied-read.service.js';
 import { BadUserInputError } from './errors.js';
 import { Lied } from '../entity/lied.entity.js';
 
-export type LiedDTO = Omit<Lied, 'aktualisiert' | 'erzeugt' >;
+export type LiedDTO = Omit<Lied, 'aktualisiert' | 'erzeugt'>;
 export interface IdInput {
     id: number;
 }

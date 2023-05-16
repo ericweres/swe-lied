@@ -78,7 +78,9 @@ describe('GET /rest', () => {
             .map((lied) => lied._links.self.href)
             .forEach((selfLink) => {
                 // eslint-disable-next-line security/detect-non-literal-regexp, security-node/non-literal-reg-expr
-                expect(selfLink).toMatch(new RegExp(`^${baseURL.toLowerCase()}`, 'u'));
+                expect(selfLink).toMatch(
+                    new RegExp(`^${baseURL.toLowerCase()}`, 'u'),
+                );
             });
     });
 
