@@ -25,8 +25,8 @@ import {
     shutdownServer,
     startServer,
 } from '../testserver.js';
-import { type LiederModel } from '../../src/lied/rest/lied-get.controller.js';
 import { HttpStatus } from '@nestjs/common';
+import { type LiederModel } from '../../src/lied/rest/lied-get.controller.js';
 
 // -----------------------------------------------------------------------------
 // T e s t d a t e n
@@ -77,8 +77,8 @@ describe('GET /rest', () => {
         lieder
             .map((lied) => lied._links.self.href)
             .forEach((selfLink) => {
-                // eslint-disable-next-line security/detect-non-literal-regexp, security-node/non-literal-reg-expr
                 expect(selfLink).toMatch(
+                    // eslint-disable-next-line security/detect-non-literal-regexp, security-node/non-literal-reg-expr
                     new RegExp(`^${baseURL.toLowerCase()}`, 'u'),
                 );
             });
@@ -106,7 +106,7 @@ describe('GET /rest', () => {
         lieder
             .map((lied) => lied.titel)
             .forEach((titel) =>
-                expect(titel!.toLowerCase()).toEqual(
+                expect(titel.toLowerCase()).toEqual(
                     expect.stringContaining(titelVorhanden),
                 ),
             );

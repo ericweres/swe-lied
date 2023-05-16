@@ -19,8 +19,8 @@
  * Das Modul enthält die Konfiguration für den Zugriff auf die DB.
  * @packageDocumentation
  */
-import { Lied } from '../lied/entity/lied.entity.js';
 import { type DataSourceOptions } from 'typeorm';
+import { Lied } from '../lied/entity/lied.entity.js';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { type TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { dbType } from './dbtype.js';

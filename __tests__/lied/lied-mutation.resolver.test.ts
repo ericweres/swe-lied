@@ -29,8 +29,8 @@ import {
     shutdownServer,
     startServer,
 } from '../testserver.js';
-import { LiedReadService } from '../../src/lied/service/lied-read.service.js';
 import { HttpStatus } from '@nestjs/common';
+import { LiedReadService } from '../../src/lied/service/lied-read.service.js';
 import { loginGraphQL } from '../login.js';
 
 // -----------------------------------------------------------------------------
@@ -107,7 +107,6 @@ describe('GraphQL Mutations', () => {
     });
 
     // -------------------------------------------------------------------------
-    // eslint-disable-next-line max-lines-per-function
     test('Lied mit ungueltigen Werten neu anlegen', async () => {
         // given
         const token = await loginGraphQL(client);
@@ -257,7 +256,6 @@ describe('GraphQL Mutations', () => {
     });
 
     // -------------------------------------------------------------------------
-    // eslint-disable-next-line max-lines-per-function
     test('Lied mit ungueltigen Werten aktualisieren', async () => {
         // given
         const token = await loginGraphQL(client);

@@ -26,8 +26,8 @@ import {
     shutdownServer,
     startServer,
 } from '../testserver.js';
-import { type LiedDTO } from '../../src/lied/graphql/lied-query.resolver.js';
 import { HttpStatus } from '@nestjs/common';
+import { type LiedDTO } from '../../src/lied/graphql/lied-query.resolver.js';
 
 /* eslint-disable jest/no-export */
 export type GraphQLQuery = Pick<GraphQLRequest, 'query'>;

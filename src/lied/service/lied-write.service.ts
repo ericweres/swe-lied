@@ -20,15 +20,6 @@
  * Schreiboperationen im Anwendungskern.
  * @packageDocumentation
  */
-
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import RE2 from 're2';
-import { Repository, type DeleteResult } from 'typeorm';
-import { getLogger } from '../../logger/logger.js';
-import { MailService } from '../../mail/mail.service.js';
-import { Kuenstler } from '../entity/kuenstler.entity.js';
-import { Lied } from '../entity/lied.entity.js';
 import {
     type CreateError,
     type LiedNotExists,
@@ -36,7 +27,15 @@ import {
     type VersionInvalid,
     type VersionOutdated,
 } from './errors.js';
+import { type DeleteResult, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
+import { Kuenstler } from '../entity/kuenstler.entity.js';
+import { Lied } from '../entity/lied.entity.js';
 import { LiedReadService } from './lied-read.service.js';
+import { MailService } from '../../mail/mail.service.js';
+import RE2 from 're2';
+import { getLogger } from '../../logger/logger.js';
 
 /** Typdefinitionen zum Aktualisieren eines Liedes mit `update`. */
 export interface UpdateParams {

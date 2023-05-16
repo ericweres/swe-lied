@@ -46,19 +46,19 @@ import {
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
-import { LiedDTO, LiedDtoOhneRef } from './liedDTO.entity.js';
 import { type CreateError, type UpdateError } from '../service/errors.js';
+import { LiedDTO, LiedDtoOhneRef } from './liedDTO.entity.js';
 import { Request, Response } from 'express';
-import { LiedWriteService } from '../service/lied-write.service.js';
 import { JwtAuthGuard } from '../../security/auth/jwt/jwt-auth.guard.js';
+import { Kuenstler } from '../entity/kuenstler.entity.js';
+import { Lied } from '../entity/lied.entity.js';
+import { LiedWriteService } from '../service/lied-write.service.js';
 import { ResponseTimeInterceptor } from '../../logger/response-time.interceptor.js';
 import { RolesAllowed } from '../../security/auth/roles/roles-allowed.decorator.js';
 import { RolesGuard } from '../../security/auth/roles/roles.guard.js';
 import { getBaseUri } from './getBaseUri.js';
 import { getLogger } from '../../logger/logger.js';
 import { paths } from '../../config/paths.js';
-import { Lied } from '../entity/lied.entity.js';
-import { Kuenstler } from '../entity/kuenstler.entity.js';
 
 /**
  * Die Controller-Klasse für die Verwaltung von Bücher.
@@ -189,7 +189,7 @@ export class LiedWriteController {
         }
 
         const lied = this.#liedDtoOhneRefToLied(liedDTO);
-        const result = await this.#service.update({ id, lied: lied, version });
+        const result = await this.#service.update({ id, lied, version });
         if (typeof result === 'object') {
             return this.#handleUpdateError(result, res);
         }

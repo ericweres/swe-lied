@@ -16,23 +16,20 @@
  */
 // eslint-disable-next-line max-classes-per-file
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { UseGuards, UseInterceptors } from '@nestjs/common';
-
-import { BadUserInputError } from './errors.js';
-
+import { type CreateError, type UpdateError } from '../service/errors.js';
 import { IsInt, IsNumberString, Min } from 'class-validator';
-import { getLogger } from '../../logger/logger.js';
-import { ResponseTimeInterceptor } from '../../logger/response-time.interceptor.js';
+import { UseGuards, UseInterceptors } from '@nestjs/common';
+import { BadUserInputError } from './errors.js';
+import { type IdInput } from './lied-query.resolver.js';
 import { JwtAuthGraphQlGuard } from '../../security/auth/jwt/jwt-auth-graphql.guard.js';
+import { Kuenstler } from '../entity/kuenstler.entity.js';
+import { Lied } from '../entity/lied.entity.js';
+import { LiedDTO } from '../rest/liedDTO.entity.js';
+import { LiedWriteService } from '../service/lied-write.service.js';
+import { ResponseTimeInterceptor } from '../../logger/response-time.interceptor.js';
 import { RolesAllowed } from '../../security/auth/roles/roles-allowed.decorator.js';
 import { RolesGraphQlGuard } from '../../security/auth/roles/roles-graphql.guard.js';
-import { LiedDTO } from '../rest/liedDTO.entity.js';
-import { type CreateError, type UpdateError } from '../service/errors.js';
-import { LiedWriteService } from '../service/lied-write.service.js';
-
-import { type IdInput } from './lied-query.resolver.js';
-import { Lied } from '../entity/lied.entity.js';
-import { Kuenstler } from '../entity/kuenstler.entity.js';
+import { getLogger } from '../../logger/logger.js';
 
 // Authentifizierung und Autorisierung durch
 //  GraphQL Shield

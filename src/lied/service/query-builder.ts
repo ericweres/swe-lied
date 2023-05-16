@@ -19,16 +19,13 @@
  * Das Modul besteht aus der Klasse {@linkcode QueryBuilder}.
  * @packageDocumentation
  */
-
-import { Repository } from 'typeorm';
-
-import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
-import { typeOrmModuleOptions } from '../../config/db.js';
-import { getLogger } from '../../logger/logger.js';
+import { Injectable } from '@nestjs/common';
 import { Kuenstler } from '../entity/kuenstler.entity.js';
 import { Lied } from '../entity/lied.entity.js';
+import { Repository } from 'typeorm';
+import { getLogger } from '../../logger/logger.js';
+import { typeOrmModuleOptions } from '../../config/db.js';
 
 /** Typdefinitionen für die Suche mit der Lied-ID. */
 export interface BuildIdParams {
@@ -91,7 +88,7 @@ export class QueryBuilder {
         // z.B. { titel: 'a', rating: 5, javascript: true }
         // "rest properties" fuer anfaengliche WHERE-Klausel: ab ES 2018 https://github.com/tc39/proposal-object-rest-spread
         // type-coverage:ignore-next-line
-        const { titel, Pop, Metal, typescript, ...props } = suchkriterien;
+        const { titel, pop, metal, typescript, ...props } = suchkriterien;
 
         let useWhere = true;
 
@@ -108,7 +105,7 @@ export class QueryBuilder {
             useWhere = false;
         }
 
-        if (Pop === 'true') {
+        if (pop === 'true') {
             queryBuilder = useWhere
                 ? queryBuilder.where(
                       `${this.#liedAlias}.schlagwoerter like '%Pop%'`,
@@ -119,7 +116,7 @@ export class QueryBuilder {
             useWhere = false;
         }
 
-        if (Metal === 'true') {
+        if (metal === 'true') {
             queryBuilder = useWhere
                 ? queryBuilder.where(
                       `${this.#liedAlias}.schlagwoerter like '%Metal%'`,

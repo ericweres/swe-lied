@@ -42,8 +42,8 @@ import {
     shutdownServer,
     startServer,
 } from '../testserver.js';
-import { type LiedModel } from '../../src/lied/rest/lied-get.controller.js';
 import { HttpStatus } from '@nestjs/common';
+import { type LiedModel } from '../../src/lied/rest/lied-get.controller.js';
 
 // -----------------------------------------------------------------------------
 // T e s t d a t e n

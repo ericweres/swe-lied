@@ -81,4 +81,4 @@ export class LiedDTO extends LiedDtoOhneRef {
 
     // AbbildungDTO
 }
-/* eslint-enable max-classes-per-file, @typescript-eslint/no-magic-numbers */
+/* eslint-enable max-classes-per-file */

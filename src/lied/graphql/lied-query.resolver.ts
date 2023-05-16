@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { UseInterceptors } from '@nestjs/common';
 import { Args, Query, Resolver } from '@nestjs/graphql';
-import { getLogger } from '../../logger/logger.js';
-import { ResponseTimeInterceptor } from '../../logger/response-time.interceptor.js';
-import { LiedReadService } from '../service/lied-read.service.js';
 import { BadUserInputError } from './errors.js';
 import { Lied } from '../entity/lied.entity.js';
+import { LiedReadService } from '../service/lied-read.service.js';
+import { ResponseTimeInterceptor } from '../../logger/response-time.interceptor.js';
+import { UseInterceptors } from '@nestjs/common';
+import { getLogger } from '../../logger/logger.js';
 
 export type LiedDTO = Omit<Lied, 'aktualisiert' | 'erzeugt'>;
 export interface IdInput {
