@@ -141,8 +141,8 @@ export class LiedReadService {
         keys.forEach((key) => {
             if (
                 !this.#liedProps.includes(key) &&
-                key !== 'javascript' &&
-                key !== 'typescript'
+                key !== 'Pop' &&
+                key !== 'Metal'
             ) {
                 this.#logger.debug(
                     '#find: ungueltiges Suchkriterium "%s"',

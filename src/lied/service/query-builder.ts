@@ -91,7 +91,7 @@ export class QueryBuilder {
         // z.B. { titel: 'a', rating: 5, javascript: true }
         // "rest properties" fuer anfaengliche WHERE-Klausel: ab ES 2018 https://github.com/tc39/proposal-object-rest-spread
         // type-coverage:ignore-next-line
-        const { titel, javascript, typescript, ...props } = suchkriterien;
+        const { titel, Pop, Metal, typescript, ...props } = suchkriterien;
 
         let useWhere = true;
 
@@ -108,24 +108,24 @@ export class QueryBuilder {
             useWhere = false;
         }
 
-        if (javascript === 'true') {
+        if (Pop === 'true') {
             queryBuilder = useWhere
                 ? queryBuilder.where(
-                      `${this.#liedAlias}.schlagwoerter like '%JAVASCRIPT%'`,
+                      `${this.#liedAlias}.schlagwoerter like '%Pop%'`,
                   )
                 : queryBuilder.andWhere(
-                      `${this.#liedAlias}.schlagwoerter like '%JAVASCRIPT%'`,
+                      `${this.#liedAlias}.schlagwoerter like '%Pop%'`,
                   );
             useWhere = false;
         }
 
-        if (typescript === 'true') {
+        if (Metal === 'true') {
             queryBuilder = useWhere
                 ? queryBuilder.where(
-                      `${this.#liedAlias}.schlagwoerter like '%TYPESCRIPT%'`,
+                      `${this.#liedAlias}.schlagwoerter like '%Metal%'`,
                   )
                 : queryBuilder.andWhere(
-                      `${this.#liedAlias}.schlagwoerter like '%TYPESCRIPT%'`,
+                      `${this.#liedAlias}.schlagwoerter like '%Metal%'`,
                   );
             useWhere = false;
         }
