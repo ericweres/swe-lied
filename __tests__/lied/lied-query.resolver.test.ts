@@ -39,9 +39,9 @@ export type GraphQLResponseBody = Pick<GraphQLResponse, 'data' | 'errors'>;
 // -----------------------------------------------------------------------------
 const idVorhanden = '1';
 
-const titelVorhanden = 'Alpha';
+const titelVorhanden = 'Ain\'t No Mountain High Enough';
 
-const teilTitelVorhanden = 'a';
+const teilTitelVorhanden = 's';
 
 const teilTitelNichtVorhanden = 'abc';
 

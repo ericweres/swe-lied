@@ -39,7 +39,7 @@ import {
     shutdownServer,
     startServer,
 } from '../testserver.js';
-import { type BuchModel } from '../../src/buch/rest/buch-get.controller.js';
+import { type LiedModel } from '../../src/lied/rest/lied-get.controller.js';
 import { HttpStatus } from '@nestjs/common';
 
 // -----------------------------------------------------------------------------
@@ -69,12 +69,12 @@ describe('GET /rest/:id', () => {
         await shutdownServer();
     });
 
-    test('Buch zu vorhandener ID', async () => {
+    test('Lied zu vorhandener ID', async () => {
         // given
         const url = `/${idVorhanden}`;
 
         // when
-        const response: AxiosResponse<BuchModel> = await client.get(url);
+        const response: AxiosResponse<LiedModel> = await client.get(url);
 
         // then
         const { status, headers, data } = response;

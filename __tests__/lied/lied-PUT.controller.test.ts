@@ -32,52 +32,35 @@ import { loginRest } from '../login.js';
 // T e s t d a t e n
 // -----------------------------------------------------------------------------
 const geaendertesLied: LiedDtoOhneRef = {
-    isbn: '978-0-201-63361-0',
     rating: 5,
-    art: 'KINDLE',
-    preis: 3333,
-    rabatt: 0.33,
-    lieferbar: true,
+    art: 'MP3',
+    titel: 'Lied',
     datum: '2022-03-03',
-    homepage: 'https://geaendert.put.rest',
     schlagwoerter: ['JAVASCRIPT'],
 };
-const idVorhanden = '30';
+const idVorhanden = '10';
 
 const geaendertesLiedIdNichtVorhanden: LiedDtoOhneRef = {
-    isbn: '978-0-007-09732-6',
     rating: 4,
-    art: 'DRUCKAUSGABE',
-    preis: 44.4,
-    rabatt: 0.044,
-    lieferbar: true,
+    art: 'MP3',
+    titel: 'LiedIdNichtVorhanden',
     datum: '2022-02-04',
-    homepage: 'https://acme.de',
     schlagwoerter: ['JAVASCRIPT'],
 };
 const idNichtVorhanden = '999999';
 
 const geaendertesLiedInvalid: Record<string, unknown> = {
-    isbn: 'falsche-ISBN',
     rating: -1,
     art: 'UNSICHTBAR',
-    preis: -1,
-    rabatt: 2,
-    lieferbar: true,
     datum: '12345-123-123',
     titel: '?!',
-    homepage: 'anyHomepage',
 };
 
 const veraltesLied: LiedDtoOhneRef = {
-    isbn: '978-0-007-09732-6',
     rating: 1,
-    art: 'DRUCKAUSGABE',
-    preis: 44.4,
-    rabatt: 0.044,
-    lieferbar: true,
+    titel: 'AltesLied',
+    art: 'MP3',
     datum: '2022-02-04',
-    homepage: 'https://acme.de',
     schlagwoerter: ['JAVASCRIPT'],
 };
 
@@ -159,13 +142,9 @@ describe('PUT /rest/:id', () => {
         headers.Authorization = `Bearer ${token}`;
         headers['If-Match'] = '"0"';
         const expectedMsg = [
-            expect.stringMatching(/^isbn /u),
             expect.stringMatching(/^rating /u),
             expect.stringMatching(/^art /u),
-            expect.stringMatching(/^preis /u),
-            expect.stringMatching(/^rabatt /u),
             expect.stringMatching(/^datum /u),
-            expect.stringMatching(/^homepage /u),
         ];
 
         // when

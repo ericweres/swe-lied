@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GET /rest/:id Lied zu vorhandener ID 1`] = `"https://desktop-xd1337:3000/rest/1"`;
