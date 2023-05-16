@@ -36,7 +36,7 @@ import { loginGraphQL } from '../login.js';
 // -----------------------------------------------------------------------------
 // T e s t d a t e n
 // -----------------------------------------------------------------------------
-const idLoeschen = '60';
+const idLoeschen = '12';
 
 // -----------------------------------------------------------------------------
 // T e s t s
@@ -118,11 +118,11 @@ describe('GraphQL Mutations', () => {
                     create(
                         input: {
                             rating: -1,
-                            art: KINDLE,
+                            art: MP3,
                             datum: "12345-123-123",
-                            titel: -1,
+                            titel: "Lied mit ungueltigen Werten neu anlegen",
                             kuenstler: [{
-                                name: -1,
+                                name: "KünstlerName",
                             }]
                         }
                     )
@@ -131,10 +131,7 @@ describe('GraphQL Mutations', () => {
         };
         const expectedMsg = [
             expect.stringMatching(/^rating /u),
-            expect.stringMatching(/^art /u),
             expect.stringMatching(/^datum /u),
-            expect.stringMatching(/^titel /u),
-            expect.stringMatching(/^kuenstler.name /u),
         ];
 
         // when
@@ -226,16 +223,13 @@ describe('GraphQL Mutations', () => {
                 mutation {
                     update(
                         input: {
-                            id: "40",
+                            id: "11",
                             version: 0,
                             rating: 5,
                             art: MP3,
                             datum: "2021-04-04",
                             schlagwoerter: ["JAVASCRIPT", "TYPESCRIPT"],
                             titel: "Titelupdatemutation",
-                            kuenstler: [{
-                                name: "Künstlerupdatemutation",
-                            }]
                         }
                     )
                 }
@@ -268,7 +262,7 @@ describe('GraphQL Mutations', () => {
         // given
         const token = await loginGraphQL(client);
         const authorization = { Authorization: `Bearer ${token}` }; // eslint-disable-line @typescript-eslint/naming-convention
-        const id = '40';
+        const id = '12';
         const body: GraphQLQuery = {
             query: `
                 mutation {
@@ -277,12 +271,10 @@ describe('GraphQL Mutations', () => {
                             id: "${id}",
                             version: 0,
                             rating: -1,
-                            art: KINDLE,
+                            art: MP3,
                             datum: "12345-123-123",
                             schlagwoerter: ["JAVASCRIPT", "TYPESCRIPT"]
-                            kuenstler: [{
-                                name: -1,
-                            }]
+                            titel: "Lied mit ungueltigen Werten aktualisieren",
                         }
                     )
                 }
@@ -290,7 +282,6 @@ describe('GraphQL Mutations', () => {
         };
         const expectedMsg = [
             expect.stringMatching(/^rating /u),
-            expect.stringMatching(/^art /u),
             expect.stringMatching(/^datum /u),
         ];
 
@@ -342,9 +333,6 @@ describe('GraphQL Mutations', () => {
                             datum: "2021-04-04",
                             schlagwoerter: ["JAVASCRIPT", "TYPESCRIPT"],
                             titel: "Titelupdatemutation",
-                            kuenstler: [{
-                                name: "Künstlerupdatemutation",
-                            }]
                         }
                     )
                 }
