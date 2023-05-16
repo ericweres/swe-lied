@@ -38,7 +38,7 @@ type Mutation {
 
 "Datenschema zu einem Buch, das gelesen wird"
 type Lied {
-  id: Int! #oder ID?
+  id: ID
   version: Int!
   rating: Int
   art: Art
@@ -76,7 +76,7 @@ input KuenstlerInput {
 
 "Daten für ein zu änderndes Buch"
 input LiedUpdateInput {
-  id: Int!
+  id: ID
   version: Int!
   rating: Int
   art: Art
