@@ -81,7 +81,7 @@ export type KuenstlerModel = Omit<Kuenstler[], 'id' | 'lied'>;
 /** Buch-Objekt mit HATEOAS-Links */
 export type LiedModel = Omit<
     Lied,
-    'aktualisiert' | 'erzeugt' | 'id' | 'kuenstler' | 'version'
+    'aktualisiert' | 'erzeugt' | 'id' | 'version'
 > & {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     _links: Links;
@@ -305,6 +305,7 @@ export class LiedGetController {
             datum: lied.datum,
             schlagwoerter: lied.schlagwoerter,
             titel: lied.titel,
+            kuenstler: lied.kuenstler,
             _links: links,
         };
         /* eslint-enable unicorn/consistent-destructuring */
