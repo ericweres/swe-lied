@@ -277,7 +277,7 @@ export class LiedWriteController {
             art: liedDTO.art,
             datum: liedDTO.datum,
             schlagwoerter: liedDTO.schlagwoerter,
-            titel: undefined,
+            titel: liedDTO.titel,
             kuenstler: undefined,
             erzeugt: undefined,
             aktualisiert: undefined,
