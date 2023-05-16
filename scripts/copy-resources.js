@@ -42,9 +42,7 @@ const devDist = join(configDist, 'dev');
 const postgresDist = join(devDist, 'postgres');
 const mysqlDist = join(devDist, 'mysql');
 mkdirSync(postgresDist, { recursive: true });
-mkdirSync(mysqlDist, { recursive: true });
 copySync(postgresSrc, postgresDist);
-copySync(mysqlSrc, mysqlDist);
 
 // PEM-Dateien fuer TLS kopieren
 const tlsPemSrc = join(configSrc, 'tls');
