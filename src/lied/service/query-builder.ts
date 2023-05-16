@@ -84,7 +84,10 @@ export class QueryBuilder {
         this.#logger.debug('build: suchkriterien=%o', suchkriterien);
 
         let queryBuilder = this.#repo.createQueryBuilder(this.#liedAlias);
-
+        queryBuilder.innerJoinAndSelect(
+            `${this.#liedAlias}.kuenstler`,
+            this.#kuenstlerAlias,
+        );
         // z.B. { titel: 'a', rating: 5, javascript: true }
         // "rest properties" fuer anfaengliche WHERE-Klausel: ab ES 2018 https://github.com/tc39/proposal-object-rest-spread
         // type-coverage:ignore-next-line
