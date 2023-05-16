@@ -140,8 +140,8 @@ export class LiedReadService {
         keys.forEach((key) => {
             if (
                 !this.#liedProps.includes(key) &&
-                key !== 'Pop' &&
-                key !== 'Metal'
+                key !== 'pop' &&
+                key !== 'metal'
             ) {
                 this.#logger.debug(
                     '#find: ungueltiges Suchkriterium "%s"',

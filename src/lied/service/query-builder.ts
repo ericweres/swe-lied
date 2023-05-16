@@ -108,10 +108,10 @@ export class QueryBuilder {
         if (pop === 'true') {
             queryBuilder = useWhere
                 ? queryBuilder.where(
-                      `${this.#liedAlias}.schlagwoerter like '%Pop%'`,
+                      `${this.#liedAlias}.schlagwoerter like '%pop%'`,
                   )
                 : queryBuilder.andWhere(
-                      `${this.#liedAlias}.schlagwoerter like '%Pop%'`,
+                      `${this.#liedAlias}.schlagwoerter like '%pop%'`,
                   );
             useWhere = false;
         }
@@ -119,10 +119,10 @@ export class QueryBuilder {
         if (metal === 'true') {
             queryBuilder = useWhere
                 ? queryBuilder.where(
-                      `${this.#liedAlias}.schlagwoerter like '%Metal%'`,
+                      `${this.#liedAlias}.schlagwoerter like '%metal%'`,
                   )
                 : queryBuilder.andWhere(
-                      `${this.#liedAlias}.schlagwoerter like '%Metal%'`,
+                      `${this.#liedAlias}.schlagwoerter like '%metal%'`,
                   );
             useWhere = false;
         }

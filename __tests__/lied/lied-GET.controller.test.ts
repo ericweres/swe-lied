@@ -33,7 +33,7 @@ import { type LiederModel } from '../../src/lied/rest/lied-get.controller.js';
 // -----------------------------------------------------------------------------
 const titelVorhanden = 'a';
 const titelNichtVorhanden = 'xx';
-const schlagwortVorhanden = 'Pop';
+const schlagwortVorhanden = 'pop';
 const schlagwortNichtVorhanden = 'csharp';
 
 // -----------------------------------------------------------------------------
@@ -106,7 +106,7 @@ describe('GET /rest', () => {
         lieder
             .map((lied) => lied.titel)
             .forEach((titel) =>
-                expect(titel.toLowerCase()).toEqual(
+                expect(titel).toEqual(
                     expect.stringContaining(titelVorhanden),
                 ),
             );
