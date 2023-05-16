@@ -22,7 +22,7 @@ import { LiedReadService } from '../service/lied-read.service.js';
 import { BadUserInputError } from './errors.js';
 import { Lied } from '../entity/lied.entity.js';
 
-export type LiedDTO = Omit<Lied, 'aktualisiert' | 'erzeugt' | 'kuenstler'>;
+export type LiedDTO = Omit<Lied, 'aktualisiert' | 'erzeugt' >;
 export interface IdInput {
     id: number;
 }
@@ -79,6 +79,7 @@ export class LiedQueryResolver {
             datum: lied.datum,
             schlagwoerter: lied.schlagwoerter,
             titel: lied.titel ?? 'N/A',
+            kuenstler: lied.kuenstler,
         };
     }
 }
