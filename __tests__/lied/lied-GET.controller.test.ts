@@ -106,9 +106,7 @@ describe('GET /rest', () => {
         lieder
             .map((lied) => lied.titel)
             .forEach((titel) =>
-                expect(titel).toEqual(
-                    expect.stringContaining(titelVorhanden),
-                ),
+                expect(titel).toEqual(expect.stringContaining(titelVorhanden)),
             );
     });
 
