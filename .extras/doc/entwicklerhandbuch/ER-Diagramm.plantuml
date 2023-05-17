@@ -23,32 +23,26 @@ hide circle
 ' evtl. Prbleme mit Kraehenfuessen vermeiden
 skinparam linetype ortho
 
-entity "Buch" {
-  *id : UUID <<generated>>
+entity "Lied" {
+  *id : integer <<generated>>
   --
   *version: integer
   *titel : text
   *rating: number
   *art: text
-  *verlag: text
-  *preis: number
-  *rabatt: number
-  *lieferbar: boolean
   datum: date
-  *isbn: text
-  homepage: text
   *erzeugt: timestamp
   *aktualisiert: timestamp
 }
 
-entity "Schlagwort" {
-  *id : UUID <<generated>>
+entity "Kuenstler" {
+  *id : integer <<generated>>
   --
-  *buch_id : UUID <<FK>>
-  *schlagwort : text
+  *name : text
+  *lied_id : integer <<FK>>
 }
 
-Buch ||..o{ Schlagwort
+Lied ||..o{ Kuenstler
 
 footer (c) Jürgen Zimmermann
 

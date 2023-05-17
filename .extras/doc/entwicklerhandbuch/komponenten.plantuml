@@ -25,12 +25,12 @@ actor GraphQLClient
 node "Nest" {
   [RequestLoggerMiddleware]
 
-  [BuchController]
-  [BuchResolver]
+  [LiedController]
+  [LiedResolver]
 
-  [BuchService]
+  [LiedService]
 
-  [Repository<Buch>]
+  [Repository<Lied>]
 
   [MailService]
 }
@@ -44,9 +44,9 @@ cloud {
     [nodemailer]
 }
 
-database "DB buch" {
-    [Tabelle buch]
-    [Tabelle schlagwort]
+database "DB lied" {
+    [Tabelle lied]
+    [Tabelle kuenstler]
 }
 
 node {
@@ -56,18 +56,18 @@ node {
 RESTClient ~~> [RequestLoggerMiddleware]
 GraphQLClient ~~> [RequestLoggerMiddleware]
 
-[RequestLoggerMiddleware] ~~> [BuchController]
-[RequestLoggerMiddleware] ~~> [BuchResolver]
+[RequestLoggerMiddleware] ~~> [LiedController]
+[RequestLoggerMiddleware] ~~> [LiedResolver]
 
-[BuchController] ..> [BuchService]
-[BuchResolver] ..> [BuchService]
-[BuchService] ..> [Repository<Buch>]
+[LiedController] ..> [LiedService]
+[LiedResolver] ..> [LiedService]
+[LiedService] ..> [Repository<Lied>]
 
-[Repository<Buch>] ~~> [TypeORM]
-[TypeORM] ~~> [Tabelle buch]
-[TypeORM] ~~> [Tabelle schlagwort]
+[Repository<Lied>] ~~> [TypeORM]
+[TypeORM] ~~> [Tabelle lied]
+[TypeORM] ~~> [Tabelle kuenstler]
 
-[BuchService] ..> [MailService]
+[LiedService] ..> [MailService]
 [MailService] ~~> [nodemailer]
 [nodemailer] ~~> [Mailserver]
 

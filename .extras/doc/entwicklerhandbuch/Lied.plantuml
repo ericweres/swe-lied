@@ -36,27 +36,25 @@ package typeorm {
   hide UpdateDateColumn circle
 }
 
-package buch.entity {
-  class "type BuchArt = 'KINDLE' | 'DRUCKAUSGABE'" as BuchArt
-  hide BuchArt circle
+package lied.entity {
+  class "type LiedArt = 'CD' | 'MP3'" as LiedArt
+  hide LiedArt circle
 
-  class "type Verlag = 'FOO_VERLAG' | 'BAR_VERLAG'" as Verlag
-  hide Verlag circle
-
-  class Buch <<entity>> <<@Entity>> {
-    @Column() @PrimaryColumn() readonly id: string
+  class Lied <<entity>> <<@Entity>> {
+    @Column() @PrimaryColumn() readonly id: number
     @Column() readonly titel: string
     @Column() readonly rating: number
-    @Column() readonly art: BuchArt
-    @Column() readonly verlag: Verlag
-    @Column() readonly preis: number
-    @Column() readonly rabatt: number
-    @Column() readonly lieferbar: boolean
+    @Column() readonly art: LiedArt
     @Column() readonly datum: Date
-    @Column() readonly isbn: string
-    @Column() readonly homepage?: string
+    @Column() readonly kuenstler: Kuenstler
     @CreateDateColumn() readonly erzeugt: Date
     @UpdateDateColumn() readonly aktualisiert: Date
+  }
+
+  class Kuenstler <<entity>> <<@Entity>> {
+    @Column() @PrimaryColumn() readonly id: number
+    @Column() readonly name: string
+    @ManyToOne() readonly buch: Buch
   }
 
   class Schlagwort <<entity>> <<@Entity>> {
@@ -65,12 +63,10 @@ package buch.entity {
     @ManyToOne() readonly buch: Buch
   }
 
-  Buch ..> Entity
-  Buch *--> "*" Schlagwort : @OneToMany() schlagwoerter
-  Buch .up.> BuchArt
-  Buch .up.> Verlag
-
-  BuchArt .[hidden].> Verlag
+  Lied ..> Entity
+  Lied *--> "*" Kuenstler : @OneToMany() schlagwoerter
+  Lied *--> "*" Schlagwort : @OneToMany() schlagwoerter
+  Lied .up.> LiedArt
 }
 
 hide empty members

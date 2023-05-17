@@ -35,36 +35,36 @@ package @nestjs/graphql {
   Resolver .left[hidden].> Promise
 }
 
-package buch {
+package lied {
   package entity {
-    class Buch <<entity>>
+    class Lied <<entity>>
   }
 
   package service {
-    class BuchReadService << control >>
+    class LiedReadService << control >>
   }
 
   package graphql #DDDDDD {
-    class "type BuchDTO = Omit<Buch, 'aktualisiert' | 'erzeugt' | 'schlagwoerter'> & { schlagwoerter: string[] }" as BuchDTO
-    hide BuchDTO circle
+    class "type LiedDTO = Omit<Lied, 'aktualisiert' | 'erzeugt' | 'schlagwoerter'> & { schlagwoerter: string[] }" as LiedDTO
+    hide LiedDTO circle
 
-    class BuchQueryResolver << control >> << @Resolver() >> << @UseInterceptors() >> {
-      + @Query() async findById(@Args() id: string): Promise<BuchDTO>
-      + @Query() async find(@Args() titel: string |undefined): Promise<BuchDTO[]>
+    class LiedQueryResolver << control >> << @Resolver() >> << @UseInterceptors() >> {
+      + @Query() async findById(@Args() id: string): Promise<LiedDTO>
+      + @Query() async find(@Args() titel: string |undefined): Promise<LiedDTO[]>
     }
 
-    BuchQueryResolver o-up-> "1" BuchReadService : service
-    BuchQueryResolver ..> BuchDTO
-    BuchDTO ..> Buch
-    BuchQueryResolver ..> Resolver
+    LiedQueryResolver o-up-> "1" LiedReadService : service
+    LiedQueryResolver ..> LiedDTO
+    LiedDTO ..> Lied
+    LiedQueryResolver ..> Resolver
 
-    BuchQueryResolver ..> Promise
+    LiedQueryResolver ..> Promise
 
-    BuchDTO .[hidden].> Buch
-    Buch .[hidden].> Promise
-    BuchReadService .[hidden].> Promise
-    Buch .[hidden].> Resolver
-    BuchReadService .[hidden].> Resolver
+    LiedDTO .[hidden].> Lied
+    Lied .[hidden].> Promise
+    LiedReadService .[hidden].> Promise
+    Lied .[hidden].> Resolver
+    LiedReadService .[hidden].> Resolver
   }
 }
 

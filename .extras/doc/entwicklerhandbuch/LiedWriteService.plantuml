@@ -37,47 +37,45 @@ package mail {
   class MailService
 }
 
-package buch {
+package lied {
   package entity {
-    class Buch
+    class Lied
   }
 
   package service #DDDDDD {
-    class BuchInvalid
+    class LiedInvalid
     class TitelExists
-    class IsbnExists
     class VersionInvalid
     class VersionOutdated
 
-    class BuchWriteService << control >> <<@Injectable()>> {
-      + async create(buch: Buch): Promise<string|BuchInvalid|TitelExists|IsbnExists>
-      + async update(id: string, buch: Buch, version: string): Promise<number|BuchInvalid|TitelExists|IsbnExists|VersionInvalid|VersionOutdated>
+    class LiedWriteService << control >> <<@Injectable()>> {
+      + async create(lied: Lied): Promise<string|LiedInvalid|TitelExists|IsbnExists>
+      + async update(id: string, lied: Lied, version: string): Promise<number|LiedInvalid|TitelExists|IsbnExists|VersionInvalid|VersionOutdated>
       + async delete(id: string): Promise<boolean>
     }
 
-    BuchWriteService o--> "1" BuchValidationService: validationService
-    BuchWriteService o--> "1" BuchReadService: readService
-    BuchWriteService o--> "1" Repository: @InjectRepository repo
-    BuchWriteService o--> "1" MailService: mailService
+    LiedWriteService o--> "1" LiedValidationService: validationService
+    LiedWriteService o--> "1" LiedReadService: readService
+    LiedWriteService o--> "1" Repository: @InjectRepository repo
+    LiedWriteService o--> "1" MailService: mailService
 
-    BuchWriteService .up.> Injectable
-    BuchWriteService .up.> InjectRepository
+    LiedWriteService .up.> Injectable
+    LiedWriteService .up.> InjectRepository
 
-    BuchWriteService .up.> Promise
-    BuchWriteService ..> Buch
-    BuchWriteService .up.> BuchInvalid
-    BuchWriteService .up.> TitelExists
-    BuchWriteService .up.> IsbnExists
-    BuchWriteService .up.> VersionInvalid
-    BuchWriteService .up.> VersionOutdated
+    LiedWriteService .up.> Promise
+    LiedWriteService ..> Lied
+    LiedWriteService .up.> LiedInvalid
+    LiedWriteService .up.> TitelExists
+    LiedWriteService .up.> VersionInvalid
+    LiedWriteService .up.> VersionOutdated
 
-    BuchInvalid .up[hidden].> Buch
-    Buch .up[hidden].> Promise
-    Buch .up[hidden].> Injectable
-    Buch .up[hidden].> InjectRepository
-    TitelExists .up[hidden].> Buch
-    BuchValidationService .[hidden].> Repository
-    BuchValidationService .[hidden].> MailService
+    LiedInvalid .up[hidden].> Lied
+    Lied .up[hidden].> Promise
+    Lied .up[hidden].> Injectable
+    Lied .up[hidden].> InjectRepository
+    TitelExists .up[hidden].> Lied
+    LiedValidationService .[hidden].> Repository
+    LiedValidationService .[hidden].> MailService
   }
 }
 

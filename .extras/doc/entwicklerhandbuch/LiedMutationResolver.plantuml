@@ -46,37 +46,37 @@ package security.auth {
   Roles .right.> Role
 }
 
-package buch #DDDDDD {
+package lied #DDDDDD {
   package entity #FFFFFF {
-    class Buch <<entity>>
+    class Lied <<entity>>
   }
 
   package service #FFFFFF {
-    class BuchWriteService << control >>
+    class LiedWriteService << control >>
   }
 
-  class "type BuchDTO = Omit<Buch, 'aktualisiert' | 'erzeugt' | 'schlagwoerter'> & { schlagwoerter: string[] }" as BuchDTO
-  hide BuchDTO circle
+  class "type LiedDTO = Omit<Lied, 'aktualisiert' | 'erzeugt' | 'schlagwoerter'> & { schlagwoerter: string[] }" as LiedDTO
+  hide LiedDTO circle
 
-  class BuchMutationResolver << control >> << @Resolver() >> << @UseGuards() >> << @UseInterceptors() >> {
-    + @Mutation() @Roles() async create(@Args() buch: Buch): Promise<string>
-    + @Mutation() @Roles() async update(@Args() buch: BuchDTO): Promise<number>
+  class LiedMutationResolver << control >> << @Resolver() >> << @UseGuards() >> << @UseInterceptors() >> {
+    + @Mutation() @Roles() async create(@Args() lied: Lied): Promise<string>
+    + @Mutation() @Roles() async update(@Args() lied: LiedDTO): Promise<number>
     + @Mutation() @Roles() async delete(@Args() id: string): Promise<boolean>
   }
 
-  BuchMutationResolver o-down-> "1" BuchWriteService : service
+  LiedMutationResolver o-down-> "1" LiedWriteService : service
 
-  BuchMutationResolver ..> Buch
-  BuchMutationResolver ..> BuchDTO
-  BuchDTO .up.> Buch
-  BuchMutationResolver ..> Promise
-  BuchMutationResolver ..> Resolver
+  LiedMutationResolver ..> Lied
+  LiedMutationResolver ..> LiedDTO
+  LiedDTO .up.> Lied
+  LiedMutationResolver ..> Promise
+  LiedMutationResolver ..> Resolver
 
-  BuchMutationResolver .up.> Roles
-  BuchMutationResolver .up.> Role
+  LiedMutationResolver .up.> Roles
+  LiedMutationResolver .up.> Role
 
-  BuchDTO .[hidden].> Promise
-  BuchDTO .[hidden].> Resolver
+  LiedDTO .[hidden].> Promise
+  LiedDTO .[hidden].> Resolver
 }
 
 hide empty members
