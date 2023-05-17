@@ -23,9 +23,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          apt-get install -y gcc g++ make python3-minimal
+          sudo apt-get install -y gcc g++ make python3-minimal
           curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-          apt-get install -y nodejs
+          sudo apt-get install -y nodejs
           npm install -g npm
           npm ci --omit=dev --no-package-lock --force
           npm install -D typescript@beta --no-package-lock --force
