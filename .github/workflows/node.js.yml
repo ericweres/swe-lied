@@ -11,6 +11,9 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    
+    container:
+      image: node:20.0.0-bullseye
 
     steps:
       - name: Checkout repository
@@ -23,9 +26,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt-get install -y gcc g++ make python3-minimal
+          apt-get update -y
+          apt-get upgrade -y
+          apt-get install -y gcc g++ make python3-minimal
           curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-          sudo apt-get install -y nodejs
+          apt-get install -y nodejs
           npm install -g npm
           npm ci --omit=dev --no-package-lock --force
           npm install -D typescript@beta --no-package-lock --force
