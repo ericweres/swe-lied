@@ -27,36 +27,24 @@ FROM jenkins/jenkins:${JENKINS_VERSION}
 
 USER root
 
-RUN <<EOF
-set -ex
+RUN set -ex && \
+    apt-get update --yes && \
+    apt-get install --no-install-recommends --yes --show-progress lsb-release && \
+    apt-get upgrade --yes && \
+    apt-get autoremove --yes && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# https://packages.debian.org/bullseye/lsb-release
-# https://unix.stackexchange.com/questions/217369/clear-apt-get-list
-apt-get update --yes
-apt-get install --no-install-recommends --yes --show-progress lsb-release
-apt-get upgrade --yes
-apt-get autoremove --yes
-apt-get clean
-rm -rf /var/lib/apt/lists/*
-# GPG-Schluessel fuer Docker hinzufuegen
-# https://www.howtoforge.de/anleitung/so-installierst-du-docker-unter-debian-11
-curl -fsSLo /usr/share/keyrings/docker-archive-keyring.asc https://download.docker.com/linux/debian/gpg
-# Docker-Repository hinzufuegen
-# https://www.howtoforge.de/anleitung/so-installierst-du-docker-unter-debian-11
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.asc] https://download.docker.com/linux/debian $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
-# https://docs.docker.com/engine/install/debian/#install-from-a-package
-# https://download.docker.com/linux/debian/dists/bullseye/pool/stable/amd64
-# https://debian.pkgs.org/11/docker-ce-amd64
-# apt-cache policy docker-ce-cli
-apt-get update --yes
-apt-get install --no-install-recommends --yes --show-progress docker-ce-cli
-apt-get upgrade --yes
-apt-get autoremove --yes
-apt-get clean
-rm -rf /var/lib/apt/lists/*
-EOF
+RUN set -ex && \
+    curl -fsSLo /usr/share/keyrings/docker-archive-keyring.asc https://download.docker.com/linux/debian/gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.asc] https://download.docker.com/linux/debian $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list && \
+    apt-get update --yes && \
+    apt-get install --no-install-recommends --yes --show-progress docker-ce-cli && \
+    apt-get upgrade --yes && \
+    apt-get autoremove --yes && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 USER jenkins
-# https://plugins.jenkins.io/blueocean
-# https://plugins.jenkins.io/docker-workflow
+
 RUN jenkins-plugin-cli --plugins "blueocean:1.27.3 docker-workflow:563.vd5d2e5c4007f"

@@ -35,14 +35,11 @@ COPY src ./src
 RUN grep -v \"ts-jest\": package.json.ORIG | grep -v \"ts-node\": - | grep -v \"typedoc\": - | grep -v \"@nestjs/schematics\": - > package.json
 
 # npm ci liest "dependencies" aus package-lock.json
-# "here document" wie in einem Shellscipt
-RUN <<EOF
-set -ex
-npm i -g --no-audit npm
-npm i -g --no-audit @nestjs/cli rimraf
-npm i --no-audit
-npm run build
-EOF
+RUN set -ex && \
+    npm i -g --no-audit npm && \
+    npm i -g --no-audit @nestjs/cli rimraf && \
+    npm i --no-audit && \
+    npm run build
 
 CMD ["npm", "start"]
 
@@ -75,29 +72,22 @@ RUN set -ex && \
     npm cache clean --force && \
     rm -rf /tmp/*
 
-RUN <<EOF
-set -ex
-groupadd --gid 10000 app
-useradd --uid 10000 --gid app --create-home --shell /bin/bash app
-EOF
+RUN set -ex && \
+    groupadd --gid 10000 app && \
+    useradd --uid 10000 --gid app --create-home --shell /bin/bash app
 
 COPY --from=builder --chown=app:app /app/package.json /app/.env /app/.npmrc /app/nest-cli.json ./
 COPY --from=builder --chown=app:app /app/dist ./dist
 COPY --from=builder --chown=app:app /app/src/lied/graphql/schema.graphql ./dist/lied/graphql/
 COPY --from=builder --chown=app:app /app/src/security/auth/login.graphql ./dist/security/auth/
-COPY --from=builder --chown=app:app /app/src/config/dev/mysql ./dist/config/dev/mysql
 COPY --from=builder --chown=app:app /app/src/config/dev/postgres ./dist/config/dev/postgres
-# better-sqlite3 muss mit Python uebersetzt werden
-COPY --from=builder --chown=app:app /app/src/config/dev/sqlite ./dist/config/dev/sqlite
 COPY --from=builder --chown=app:app /app/src/config/jwt ./dist/config/jwt
 COPY --from=builder --chown=app:app /app/src/config/tls ./dist/config/tls
 
-RUN <<EOF
-set -ex
-npm i --omit dev --no-audit
-npm prune --no-audit
-npm r -g --no-audit node-gyp
-EOF
+RUN set -ex && \
+    npm i --omit dev --no-audit && \
+    npm prune --no-audit && \
+    npm r -g --no-audit node-gyp
 
 USER app
 EXPOSE 3000
