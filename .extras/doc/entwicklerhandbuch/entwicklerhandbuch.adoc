@@ -66,57 +66,57 @@ ligula. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere
 cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit
 amet ligula.
 
-."BuchGetController" für Lesezugriffe an der REST-Schnittstelle
-[plantuml,BuchGetController,svg]
+."LiedGetController" für Lesezugriffe an der REST-Schnittstelle
+[plantuml,LiedGetController,svg]
 ----
-include::BuchGetController.plantuml[]
+include::LiedGetController.plantuml[]
 ----
 
 Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Donec
 sollicitudin molestie malesuada.
 
-."BuchWriteController" für Schreibzugriffe an der REST-Schnittstelle
-[plantuml,BuchGetController,svg]
+."LiedWriteController" für Schreibzugriffe an der REST-Schnittstelle
+[plantuml,LiedGetController,svg]
 ----
-include::BuchWriteController.plantuml[]
+include::LiedWriteController.plantuml[]
 ----
 
 === Die GraphQL-Schnittstelle
 
 Donec sollicitudin molestie malesuada. Donec rutrum congue leo eget malesuada.
 
-.BuchQueryResolver für Lesezugriffe an der GraphQL-Schnittstelle
-[plantuml,BuchQueryResolver,svg]
+.LiedQueryResolver für Lesezugriffe an der GraphQL-Schnittstelle
+[plantuml,LiedQueryResolver,svg]
 ----
-include::BuchQueryResolver.plantuml[]
+include::LiedQueryResolver.plantuml[]
 ----
 
 Donec sollicitudin molestie malesuada. Praesent sapien massa, convallis a
 pellentesque nec, egestas non nisi.
 
-.BuchMutationResolver für Schreibzugriffe an der GraphQL-Schnittstelle
-[plantuml,BuchMutationResolver,svg]
+.LiedMutationResolver für Schreibzugriffe an der GraphQL-Schnittstelle
+[plantuml,LiedMutationResolver,svg]
 ----
-include::BuchMutationResolver.plantuml[]
+include::LiedMutationResolver.plantuml[]
 ----
 
 === Der Anwendungskern
 
 Donec rutrum congue leo eget malesuada. Donec rutrum congue leo eget malesuada.
 
-."BuchReadService" im Anwendungskern
-[plantuml,BuchReadService,svg]
+."LiedReadService" im Anwendungskern
+[plantuml,LiedReadService,svg]
 ----
-include::BuchReadService.plantuml[]
+include::LiedReadService.plantuml[]
 ----
 
 Pellentesque in ipsum id orci porta dapibus. Donec rutrum congue leo eget
 malesuada.
 
-."BuchWriteService" im Anwendungskern
-[plantuml,BuchWriteService,svg]
+."LiedWriteService" im Anwendungskern
+[plantuml,LiedWriteService,svg]
 ----
-include::BuchWriteService.plantuml[]
+include::LiedWriteService.plantuml[]
 ----
 
 === Klasse für Entities
@@ -125,9 +125,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur arcu erat,
 accumsan id imperdiet et, porttitor at sem.
 
 .Entity
-[plantuml,Buch,svg]
+[plantuml,Lied,svg]
 ----
-include::Buch.plantuml[]
+include::Lied.plantuml[]
 ----
 
 === ER-Diagramm

@@ -75,7 +75,7 @@ export interface Links {
     remove?: Link;
 }
 
-/** Typedefinition für ein Titel-Objekt ohne Rückwärtsverweis zum Lied */
+/** Typedefinition für ein Künstler-Objekt ohne Rückwärtsverweis zum Lied */
 export type KuenstlerModel = Omit<Kuenstler[], 'id' | 'lied'>;
 
 /** Lied-Objekt mit HATEOAS-Links */
@@ -126,7 +126,7 @@ export class LiedQuery implements Suchkriterien {
 }
 
 /**
- * Die Controller-Klasse für die Verwaltung von Bücher.
+ * Die Controller-Klasse für die Verwaltung von Liedern.
  */
 // Decorator in TypeScript, zur Standardisierung in ES vorgeschlagen (stage 3)
 // https://devblogs.microsoft.com/typescript/announcing-typescript-5-0-beta/#decorators
@@ -236,15 +236,15 @@ export class LiedGetController {
     }
 
     /**
-     * Bücher werden mit Query-Parametern asynchron gesucht. Falls es mindestens
+     * Lieder werden mit Query-Parametern asynchron gesucht. Falls es mindestens
      * ein solches Lied gibt, wird der Statuscode `200` (`OK`) gesetzt. Im Rumpf
-     * des Response ist das JSON-Array mit den gefundenen Büchern, die jeweils
+     * des Response ist das JSON-Array mit den gefundenen Liedern, die jeweils
      * um Atom-Links für HATEOAS ergänzt sind.
      *
      * Falls es kein Lied zu den Suchkriterien gibt, wird der Statuscode `404`
      * (`Not Found`) gesetzt.
      *
-     * Falls es keine Query-Parameter gibt, werden alle Bücher ermittelt.
+     * Falls es keine Query-Parameter gibt, werden alle Lieder ermittelt.
      *
      * @param query Query-Parameter von Express.
      * @param req Request-Objekt von Express.
@@ -253,7 +253,7 @@ export class LiedGetController {
      */
     @Get()
     @ApiOperation({ summary: 'Suche mit Suchkriterien', tags: ['Suchen'] })
-    @ApiOkResponse({ description: 'Eine evtl. leere Liste mit Büchern' })
+    @ApiOkResponse({ description: 'Eine evtl. leere Liste mit Liedern' })
     async find(
         @Query() query: LiedQuery,
         @Req() req: Request,

@@ -22,7 +22,7 @@
 --     cd <Verzeichnis-mit-docker-compose.yaml>
 --     docker compose exec postgres bash
 --         chown postgres:postgres /var/lib/postgresql/tablespace
---         chown postgres:postgres /var/lib/postgresql/tablespace/buch
+--         chown postgres:postgres /var/lib/postgresql/tablespace/lied
 --         exit
 --     docker compose down
 -- (3) in docker-compose.yaml den User "postgres" wieder aktivieren, d.h. Kommentar entfernen
@@ -30,7 +30,7 @@
 --     docker compose up
 -- (5) 2. PowerShell:
 --     docker compose exec postgres bash
---        psql --dbname=postgres --username=postgres --file=/sql/create-db-buch.sql
+--        psql --dbname=postgres --username=postgres --file=/sql/create-db-lied.sql
 --        exit
 --     docker compose down
 

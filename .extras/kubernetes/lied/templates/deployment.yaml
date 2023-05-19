@@ -33,7 +33,7 @@ spec:
   # https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#selector
   selector:
     # Labels, mit denen z.B. ein Service einen Pod (zu diesem Deployment) identifizieren kann
-    # z.B. fuer:   kubectl delete deployment --selector app=buch --namespace acme
+    # z.B. fuer:   kubectl delete deployment --selector app=lied --namespace acme
     # i.a. gleicher Wert wie in template.metadata.labels
     matchLabels: { { - include "lied.selectorLabels" . | nindent 6 } }
   # Anzahl laufender Pods fuer das Template zu diesem Deployment (s.u.) -> ReplicaSet

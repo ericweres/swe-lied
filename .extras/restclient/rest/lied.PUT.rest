@@ -31,7 +31,7 @@ Content-Type: application/x-www-form-urlencoded
 
 username=admin&password=FALSCH
 
-### Vorhandenes Buch aktualisieren
+### Vorhandenes Lied aktualisieren
 PUT {{restUrl}}/2
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.$.token}}
@@ -39,7 +39,7 @@ If-Match: "0"
 
 < .\json\lied-put.json
 
-### NICHT-Vorhandenes Buch aktualisieren
+### NICHT-Vorhandenes Lied aktualisieren
 PUT {{restUrl}}/999999
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.$.token}}
@@ -47,14 +47,14 @@ If-Match: "0"
 
 < .\json\lied-put.json
 
-### Vorhandenes Buch *OHNE* Versionsnummer aktualisieren
+### Vorhandenes Lied *OHNE* Versionsnummer aktualisieren
 PUT {{restUrl}}/2
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.$.token}}
 
 < .\json\lied-put.json
 
-### Vorhandenes Buch mit falscher Versionsnummer aktualisieren
+### Vorhandenes Lied mit falscher Versionsnummer aktualisieren
 PUT {{restUrl}}/2
 Content-Type: application/json
 If-Match: 0
@@ -62,7 +62,7 @@ Authorization: Bearer {{login.response.body.$.token}}
 
 < .\json\lied-put.json
 
-### Vorhandenes Buch mit alter Versionsnummer aktualisieren
+### Vorhandenes Lied mit alter Versionsnummer aktualisieren
 PUT {{restUrl}}/2
 Content-Type: application/json
 If-Match: "-1"
@@ -70,7 +70,7 @@ Authorization: Bearer {{login.response.body.$.token}}
 
 < .\json\lied-put.json
 
-### Vorhandenes Buch mit ungueltigen Daten aktualisieren
+### Vorhandenes Lied mit ungueltigen Daten aktualisieren
 PUT {{restUrl}}/2
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.$.token}}

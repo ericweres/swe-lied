@@ -17,27 +17,27 @@ apiVersion: networking.k8s.io/v1
 # https://kubernetes.io/docs/concepts/services-networking/network-policies
 kind: NetworkPolicy
 metadata:
-  name: {{ include "postgres.fullname" . }}
-  namespace: {{ .Values.namespace }}
+  name: { { include "postgres.fullname" . } }
+  namespace: { { .Values.namespace } }
 spec:
   podSelector:
-    matchLabels: {{- include "postgres.selectorLabels" . | nindent 6 }}
+    matchLabels: { { - include "postgres.selectorLabels" . | nindent 6 } }
   policyTypes: [Ingress, Egress]
   egress: []
   ingress:
     - from:
         - podSelector:
             matchLabels:
-              app: buch
-              app.kubernetes.io/name: buch
-              app.kubernetes.io/instance: buch
+              app: lied
+              app.kubernetes.io/name: lied
+              app.kubernetes.io/instance: lied
       ports:
-        - port: {{ .Chart.Name }}
+        - port: { { .Chart.Name } }
           protocol: TCP
     - from:
         - podSelector:
             matchLabels:
-              {{- include "pgadmin.selectorLabels" . | nindent 14 }}
+              { { - include "pgadmin.selectorLabels" . | nindent 14 } }
       ports:
-        - port: {{ .Chart.Name }}
+        - port: { { .Chart.Name } }
           protocol: TCP

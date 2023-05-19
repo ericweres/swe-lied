@@ -17,8 +17,8 @@
 // N e t z w e r k   -  V e r b i n d u n g   n o t w e n d i g
 //
 
-### Suche mit vorhandener Buch-ID
+### Suche nach healthiness
 GET {{healthUrl}}/live
 
-### Suche mit vorhandener Buch-ID und Versionsnummer
+### Suche nach readiness
 GET {{healthUrl}}/ready

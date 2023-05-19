@@ -13,11 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# Aufruf: helm install [--debug --dry-run] buch . -f values.yaml -f dev.yaml
+# Aufruf: helm install [--debug --dry-run] lied . -f values.yaml -f dev.yaml
 #           ggf. zusaetzlich --dry-run
-#         helm uninstall buch
+#         helm uninstall lied
 
-# Metadaten generiert durch: helm create buch
+# Metadaten generiert durch: helm create lied
 
 apiVersion: v2
 name: lied

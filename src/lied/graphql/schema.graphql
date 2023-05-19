@@ -20,14 +20,14 @@ schema {
   mutation: Mutation
 }
 
-"Funktionen, um Bücherdaten zu lesen"
+"Funktionen, um Liederdaten zu lesen"
 type Query {
   lieder(titel: String): [Lied!]
 
   lied(id: ID!): Lied
 }
 
-"Funktionen, um Bücher neu anzulegen, zu aktualisieren oder zu löschen"
+"Funktionen, um Lieder neu anzulegen, zu aktualisieren oder zu löschen"
 type Mutation {
   create(input: LiedInput!): String
 

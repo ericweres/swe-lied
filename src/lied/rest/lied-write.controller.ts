@@ -61,7 +61,7 @@ import { getLogger } from '../../logger/logger.js';
 import { paths } from '../../config/paths.js';
 
 /**
- * Die Controller-Klasse für die Verwaltung von Bücher.
+ * Die Controller-Klasse für die Verwaltung von Liedern.
  */
 @Controller(paths.rest)
 @UseGuards(JwtAuthGuard, RolesGuard)

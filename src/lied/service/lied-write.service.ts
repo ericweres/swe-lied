@@ -49,7 +49,7 @@ export interface UpdateParams {
 
 /**
  * Die Klasse `LiedWriteService` implementiert den Anwendungskern für das
- * Schreiben von Bücher und greift mit _TypeORM_ auf die DB zu.
+ * Schreiben von Lieder und greift mit _TypeORM_ auf die DB zu.
  */
 @Injectable()
 export class LiedWriteService {

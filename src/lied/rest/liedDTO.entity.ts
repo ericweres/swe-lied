@@ -40,7 +40,7 @@ import { Type } from 'class-transformer';
 export const MAX_RATING = 5;
 
 /**
- * Entity-Klasse für Bücher ohne TypeORM und ohne Referenzen.
+ * Entity-Klasse für Lieder ohne TypeORM und ohne Referenzen.
  */
 export class LiedDtoOhneRef {
     @IsInt()
@@ -69,7 +69,7 @@ export class LiedDtoOhneRef {
 }
 
 /**
- * Entity-Klasse für Bücher ohne TypeORM.
+ * Entity-Klasse für Lieder ohne TypeORM.
  */
 export class LiedDTO extends LiedDtoOhneRef {
     @IsOptional()

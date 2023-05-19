@@ -24,7 +24,7 @@
 import { MaxLength } from 'class-validator';
 
 /**
- * Entity-Klasse für Titel ohne TypeORM.
+ * Entity-Klasse für Künstler ohne TypeORM.
  */
 export class KuenstlerDTO {
     @MaxLength(40)

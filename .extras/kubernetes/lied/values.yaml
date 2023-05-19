@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# Default values for buch.
+# Default values for lied.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -34,7 +34,7 @@ servicePort: 3000
 # -- Konfigurationsmodus für Node
 nodeConfig: production
 
-# -- Loglevel für buch
+# -- Loglevel für lied
 loglevel: info
 
 # -- Ausgabemodus bei Pino

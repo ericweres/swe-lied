@@ -21,15 +21,15 @@ actor Gast
 actor Admin
 actor Kunde
 
-rectangle buch {
-    Gast --> (Buch suchen)
-    Admin --> (Buch suchen)
-    Admin --> (Buch anlegen)
-    Admin --> (Buch ändern)
-    Admin --> (Buch löschen)
-    Kunde --> (Buch suchen)
-    Kunde --> (Buch anlegen)
-    Kunde --> (Buch ändern)
+rectangle lied {
+    Gast --> (Lied suchen)
+    Admin --> (Lied suchen)
+    Admin --> (Lied anlegen)
+    Admin --> (Lied ändern)
+    Admin --> (Lied löschen)
+    Kunde --> (Lied suchen)
+    Kunde --> (Lied anlegen)
+    Kunde --> (Lied ändern)
 }
 
 footer (c) Jürgen Zimmermann

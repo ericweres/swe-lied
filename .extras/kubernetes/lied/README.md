@@ -1,8 +1,8 @@
-# buch
+# lied
 
 ![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat-square)
 
-Helm Chart für buch
+Helm Chart für lied
 
 **Homepage:** <https://www.www.h-ka.de>
 

@@ -39,7 +39,7 @@ query {
   }
 }
 
-### Suche isbn, version, art und titel von einem Lied mit vorhandener Lied-ID
+### Suche titel, version, art, datum, schlagwoerter und kuenstler von einem Lied mit vorhandener Lied-ID
 POST {{graphQlUrl}}
 Content-Type: application/json
 X-REQUEST-TYPE: GraphQL
@@ -62,7 +62,7 @@ query ($id: ID! = "1") {
   "id": "1"
 }
 
-### Suche titel von einem Lied mit nicht-vorhandener Lied-ID
+### Suche titel, version, art, datum, schlagwoerter und kuenstler von einem Lied mit nicht-vorhandener Lied-ID
 POST {{graphQlUrl}}
 Content-Type: application/json
 X-REQUEST-TYPE: GraphQL
@@ -101,7 +101,7 @@ query ($titel: String = "Blue") {
   "titel": "Ain"
 }
 
-### Suche art, schlagwoerter und titel von Liedern mit vorhandenem Titel
+### Suche titel, version, art, datum, schlagwoerter und kuenstler von Liedern mit vorhandenem Titel
 POST {{graphQlUrl}}
 Content-Type: application/json
 X-REQUEST-TYPE: GraphQL
@@ -124,7 +124,7 @@ query ($titel: String = "a") {
   "titel": "a"
 }
 
-### Suche art von Liedern mit NICHT-vorhandenem Titel
+### Suche titel, version, art, datum, schlagwoerter und kuenstler von Liedern mit NICHT-vorhandenem Titel
 POST {{graphQlUrl}}
 Content-Type: application/json
 X-REQUEST-TYPE: GraphQL

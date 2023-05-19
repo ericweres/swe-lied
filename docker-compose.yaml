@@ -13,10 +13,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# Aufruf:   docker compose up postgres pgadmin fakesmtp buch
+# Aufruf:   docker compose up postgres pgadmin fakesmtp lied
 #           docker compose down
 
-# Netzwerk "buch_default" für die Container durch den Verzeichnisnamen
+# Netzwerk "lied_default" für die Container durch den Verzeichnisnamen
 ---
 # https://docs.docker.com/compose/compose-file
 # https://docs.docker.com/compose/compose-file/compose-file-v3

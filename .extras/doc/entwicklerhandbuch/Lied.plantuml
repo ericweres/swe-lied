@@ -54,13 +54,13 @@ package lied.entity {
   class Kuenstler <<entity>> <<@Entity>> {
     @Column() @PrimaryColumn() readonly id: number
     @Column() readonly name: string
-    @ManyToOne() readonly buch: Buch
+    @ManyToOne() readonly lied: Lied
   }
 
   class Schlagwort <<entity>> <<@Entity>> {
     @Column() @PrimaryColumn() readonly id: string
     @Column() readonly schlagwort: string
-    @ManyToOne() readonly buch: Buch
+    @ManyToOne() readonly lied: Lied
   }
 
   Lied ..> Entity

@@ -55,7 +55,7 @@ describe('DELETE /rest/buecher', () => {
         await shutdownServer();
     });
 
-    test('Vorhandenes Buch loeschen', async () => {
+    test('Vorhandenes Lied loeschen', async () => {
         // given
         const url = `/rest/${id}`;
         const token = await loginRest(client);
@@ -75,7 +75,7 @@ describe('DELETE /rest/buecher', () => {
         expect(data).toBeDefined();
     });
 
-    test('Buch loeschen, aber ohne Token', async () => {
+    test('Lied loeschen, aber ohne Token', async () => {
         // given
         const url = `/rest/${id}`;
 
@@ -90,7 +90,7 @@ describe('DELETE /rest/buecher', () => {
         expect(data.statusCode).toBe(HttpStatus.FORBIDDEN);
     });
 
-    test('Buch loeschen, aber mit falschem Token', async () => {
+    test('Lied loeschen, aber mit falschem Token', async () => {
         // given
         const url = `/rest/${id}`;
         const token = 'FALSCH';

@@ -35,7 +35,7 @@ export interface BuildIdParams {
     mitAbbildungen?: boolean;
 }
 /**
- * Die Klasse `QueryBuilder` implementiert das Lesen für Bücher und greift
+ * Die Klasse `QueryBuilder` implementiert das Lesen für Lieder und greift
  * mit _TypeORM_ auf eine relationale DB zu.
  */
 @Injectable()
@@ -72,7 +72,7 @@ export class QueryBuilder {
     }
 
     /**
-     * Bücher asynchron suchen.
+     * Lieder asynchron suchen.
      * @param suchkriterien JSON-Objekt mit Suchkriterien
      * @returns QueryBuilder
      */

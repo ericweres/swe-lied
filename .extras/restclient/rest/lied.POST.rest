@@ -38,28 +38,28 @@ Content-Type: application/x-www-form-urlencoded
 
 username=admin&password=FALSCH
 
-### Neues Buch anlegen
+### Neues Lied anlegen
 POST {{restUrl}}
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.$.token}}
 
 < .\json\lied-neu.json
 
-### Neues Buch mit ungueltigen Daten anlegen
+### Neues Lied mit ungueltigen Daten anlegen
 POST {{restUrl}}
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.$.token}}
 
 < .\json\lied-neu-invalid.json
 
-### Neues Buch anlegen, aber die ISBN-Nummer existiert bereits
+### Neues Lied anlegen, aber die ID existiert bereits
 POST {{restUrl}}
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.$.token}}
 
 < .\json\lied-neu.titel-exists.json
 
-### Neues Buch ohne Login anlegen
+### Neues Lied ohne Login anlegen
 POST {{restUrl}}
 Content-Type: application/json
 

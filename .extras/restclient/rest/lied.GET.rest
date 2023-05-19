@@ -17,21 +17,21 @@
 // N e t z w e r k   -  V e r b i n d u n g   n o t w e n d i g
 //
 
-### Suche alle Buecher
+### Suche aller Lieder
 GET {{restUrl}}
 
-### Suche mit vorhandener Buch-ID
+### Suche mit vorhandener Lied-ID
 GET {{restUrl}}/1
 
-### Suche mit vorhandener Buch-ID und Versionsnummer
+### Suche mit vorhandener Lied-ID und Versionsnummer
 GET {{restUrl}}/1
 If-None-Match: "0"
 
-### Suche mit vorhandener Buch-ID und falscher Versionsnummer
+### Suche mit vorhandener Lied-ID und falscher Versionsnummer
 GET {{restUrl}}/1
 If-None-Match: 0
 
-### Suche mit nicht-vorhandener Buch-ID
+### Suche mit nicht-vorhandener Lied-ID
 GET {{restUrl}}/999999
 
 ### Suche mit vorhandenem Titel
@@ -40,22 +40,13 @@ GET {{restUrl}}?titel=a
 ### Suche mit nicht-vorhandenem Titel
 GET {{restUrl}}?titel=xxx
 
-### Suche mit vorhandener ISBN
-GET {{restUrl}}?isbn=978-3-897-22583-1
-
-### Suche mit vorhandenem Schlagwort "JAVASCRIPT"
-GET {{restUrl}}?javascript=true
-
-### Suche mit vorhandenem Schlagwort "TYPESCRIPT"
+### Suche mit vorhandenem Schlagwort "Pop"
 GET {{restUrl}}?Pop=true
-
-### Suche mit vorhandenen Schlagwoertern
-GET {{restUrl}}?javascript=true&typescript=true
 
 ### Suche mit nicht-vorhandener Property
 GET {{restUrl}}?php=true
 
-### Suche mit gueltiger Buchart
+### Suche mit gueltiger Liedart
 GET {{restUrl}}?art=CD
 
 ### Suche mit gueltigem Rating

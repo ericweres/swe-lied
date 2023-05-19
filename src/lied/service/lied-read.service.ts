@@ -44,7 +44,7 @@ export interface Suchkriterien {
 }
 
 /**
- * Die Klasse `LiedReadService` implementiert das Lesen für Bücher und greift
+ * Die Klasse `LiedReadService` implementiert das Lesen für Lieder und greift
  * mit _TypeORM_ auf eine relationale DB zu.
  */
 @Injectable()
@@ -100,9 +100,9 @@ export class LiedReadService {
     }
 
     /**
-     * Bücher asynchron suchen.
+     * Lieder asynchron suchen.
      * @param suchkriterien JSON-Objekt mit Suchkriterien
-     * @returns Ein JSON-Array mit den gefundenen Büchern. Ggf. ist das Array leer.
+     * @returns Ein JSON-Array mit den gefundenen Liedern. Ggf. ist das Array leer.
      */
     async find(suchkriterien?: Suchkriterien) {
         this.#logger.debug('find: suchkriterien=%o', suchkriterien);
