@@ -28,8 +28,7 @@ jobs:
         run: |
           apt-get update -y
           apt-get upgrade -y
-          apt-get install -y gcc g++ make python3-minimal
-          npm install typescript@5.1.0-beta
+          apt-get install -y gcc g++ make python3-minimal     
           npm install -g npm
           npm ci --omit=dev --no-package-lock --force
           npm install -D typescript@beta --no-package-lock --force
