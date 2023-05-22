@@ -77,7 +77,7 @@ export class LiedDTO extends LiedDtoOhneRef {
     @ValidateNested({ each: true })
     @Type(() => KuenstlerDTO)
     @ApiProperty({ example: 'Die Abbildungen', type: String })
-    readonly kuestler: KuenstlerDTO[] | undefined;
+    readonly kuenstler: KuenstlerDTO[] | undefined;
 
     // AbbildungDTO
 }

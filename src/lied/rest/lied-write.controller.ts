@@ -234,7 +234,7 @@ export class LiedWriteController {
     }
 
     #liedDtoToLied(liedDTO: LiedDTO): Lied {
-        const kuenstler = liedDTO.kuestler?.map((kuenstlerDTO) => {
+        const kuenstler = liedDTO.kuenstler?.map((kuenstlerDTO) => {
             const kunst: Kuenstler = {
                 id: undefined,
                 name: kuenstlerDTO.name,

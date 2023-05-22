@@ -110,7 +110,7 @@ export class LiedMutationResolver {
     }
 
     #liedDtoToLied(liedDTO: LiedDTO): Lied {
-        const kuenstler = liedDTO.kuestler?.map((kuenstlerDTO) => {
+        const kuenstler = liedDTO.kuenstler?.map((kuenstlerDTO) => {
             const kuenst: Kuenstler = {
                 id: undefined,
                 name: kuenstlerDTO.name,
@@ -127,7 +127,6 @@ export class LiedMutationResolver {
             datum: liedDTO.datum,
             schlagwoerter: liedDTO.schlagwoerter,
             kuenstler,
-            abbildungen: kuenstler,
             erzeugt: undefined,
             aktualisiert: undefined,
         };

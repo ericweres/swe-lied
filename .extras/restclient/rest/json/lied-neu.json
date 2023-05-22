@@ -3,10 +3,6 @@
   "rating": 5,
   "art": "MP3",
   "datum": "2022-01-31",
-  "schlagwoerter": ["JAVASCRIPT", "TYPESCRIPT"],
-  "kuenstler": [
-    {
-      "name": "Neuer Kuenstler"
-    }
-  ]
+  "schlagwoerter": ["Pop"],
+  "kuenstler": 1
 }
