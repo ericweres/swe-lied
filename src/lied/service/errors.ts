@@ -64,7 +64,6 @@ export interface LiedNotExists {
 /**
  * Union-Type für Fehler beim Ändern eines Liedes:
  * - {@linkcode LiedNotExists}
- * - {@linkcode ConstraintViolations}
  * - {@linkcode VersionInvalid}
  * - {@linkcode VersionOutdated}
  */
