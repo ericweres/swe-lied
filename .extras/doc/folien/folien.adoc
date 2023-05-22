@@ -19,126 +19,32 @@
 
 // https://asciidoctor.org/docs/asciidoctor-revealjs
 
-= Beispiel mit Nest, REST, GraphQL, TypeORM, JWT und Jest
+= Lied Anwendungs-server
 
-Jürgen Zimmermann <Juergen.Zimmermann@h-ka.de>
+-Eric Weres <weer1011@h-ka.de>
 
-== Gliederung
+-Lukas Bunert <bulu1019@h-ka.de>
 
-* Werkzeuge
-* Nest und REST
-* Nest und GraphQL
-* TypeORM
-* Security
-* Jest, Axios und Istanbul
-* OpenAPI durch Swagger
+== Lieder
 
-== Werkzeuge
+-Hooked on a Feeling
 
-* Infrastruktur
-* Entwicklungsumgebung
-* CI und Deployment
-* Dokumentation
+-Go All the Way
 
-=== Infrastruktur
+-Spirit in the Sky
 
-* npm
-* node_modules
-* ts-node
+-Moonage Daydream
 
-=== Entwicklungsumgebung
+und viele mehr!
 
-* VS Code
-* TypeScript und ES 2015+
-* ESLint und SonarQube
-* Prettier
-* RESTclient, auch für GraphQL
+== Künstler
 
-=== CI und Deployment
+- Blue Swede
 
-* pack für Docker Images
-* Kubernetes
-  - Helm
-  - helmfile
-  - (Skaffold)
-  - Lens und Octant: Pods, Logs, ...
-* Continuous Integration (CI) durch eine Jenkins Pipeline
+- Raspberries
 
-=== Dokumentation
+- Norman Greenbaum
 
-* AsciiDoctor mit PlantUML
-* reveal.js
-* _TODO: Jekyll_
+- David Bowie
 
-== Nest und REST
-
-* Controller mit `@Controller()` usw.
-* Services durch `@Injectable`
-* Entity-Klasse mit `@Entity()` und Decorators für die Properties, wie z.B. `@Column()`, für TypeORM
-* Guards und Strategies
-* Middleware, z.B. `RequestLoggerMiddleware`
-* Interceptor, z.B. für Antwortzeit und Statuscode
-* `@Module()`
-
-=== Decorator für die Controller-Klasse
-
-* `@Controller()`
-* `@UseGuards()`
-* `@UseInterceptors()`
-
-=== Decorator für die Controller-Funktionen
-
-* `@Get()`, `@Post()`, `@Put()`, `@Delete()`
-* `@Param()`, `@Query()`
-* `@Req()`, `@Res()`, `@Body()`, `@Header()`
-* `@Roles()`
-
-== Nest und GraphQL
-
-* Wrapper für Apollo Server
-* Schema-Definition mit Typen, Query und Mutation
-* Resolver mit `@Resolver()`, `@Query()`, `@Mutation()`, `@Args()`
-* RESTclient
-
-== TypeORM
-
-* OR-Mapping
-* ähnlich wie Hibernate
-* Entity-Klassen
-* Decorators: @Entity(), @Column(), @PrimaryColumn(), @OneToOne(), ..., @VersionColumn(), @CreateDateColumn(), @UpdateDateColumn()
-* Repository
-* QueryBuilder
-
-== Security
-
-* JWT
-  - Private und Public Key
-  - Header
-  - Payload
-  - Signature
-* Guards durch Nest für RBAC
-* Lokale Strategie für Passport
-* Argon2
-
-=== JWT
-
-* Header
-  - alg, z.B. RS256
-  - typ
-*  Payload
-  - iat (issued at)
-  - exp (expiration)
-  - iss (issuer)
-
-== Jest, Axios und Istanbul
-
-* Jest
-* ts-jest
-* Axios
-* Istanbul
-
-== OpenAPI durch Swagger
-
-* Wrapper durch Nest
-* @Api...() einschl. `@ApiBearerAuth()`
-* Button _Try it out_
+und viele mehr!
