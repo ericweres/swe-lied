@@ -31,7 +31,6 @@ jobs:
           apt-get install -y gcc g++ make python3-minimal     
           npm install -g npm
           npm ci --omit=dev --no-package-lock --force
-          npm install -D typescript@beta --no-package-lock --force
           npm audit --omit=dev fix --force
           npm install -D ts-node ts-jest typedoc --no-package-lock --force
 
