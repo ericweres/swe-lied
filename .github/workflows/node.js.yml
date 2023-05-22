@@ -29,8 +29,6 @@ jobs:
           apt-get update -y
           apt-get upgrade -y
           apt-get install -y gcc g++ make python3-minimal
-          curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-          apt-get install -y nodejs
           npm install typescript@"5.1.0-beta
           npm install -g npm
           npm ci --omit=dev --no-package-lock --force
