@@ -4,5 +4,9 @@
   "art": "MP3",
   "datum": "2022-01-31",
   "schlagwoerter": ["Pop"],
-  "kuenstler": 1
+  "kuenstler": [
+    {
+      "name": "Neuer Kuenstler"
+    }
+  ]
 }
