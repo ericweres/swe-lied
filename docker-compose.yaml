@@ -102,30 +102,6 @@ services:
           memory: 2048M
 
   # ------------------------------------------------------------------------------------
-  # D B e a v e r
-  # ------------------------------------------------------------------------------------
-  # als User "cbadmin" muss man eine DB-Verbindung und einen User einrichten
-  dbeaver:
-    image: dbeaver/cloudbeaver:23.0.3
-    links: [mysql]
-    ports:
-      - published: 8978
-        target: 8978
-    volumes:
-      - type: bind
-        source: C:/Zimmermann/volumes/dbeaver
-        target: /opt/cloudbeaver/workspace
-    environment:
-      TZ: Europe/Berlin
-    container_name: dbeaver
-    hostname: dbeaver
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 768M
-
-  # ------------------------------------------------------------------------------------
   # f a k e s m t p
   # ------------------------------------------------------------------------------------
   fakesmtp:
