@@ -17,7 +17,7 @@
 // N e t z w e r k   -  V e r b i n d u n g   n o t w e n d i g
 //
 
-### Suche aller Lieder
+### Suche alle Lieder
 GET {{restUrl}}
 
 ### Suche mit vorhandener Lied-ID
@@ -27,24 +27,20 @@ GET {{restUrl}}/1
 GET {{restUrl}}/1
 If-None-Match: "0"
 
-### Suche mit vorhandener Lied-ID und falscher Versionsnummer
-GET {{restUrl}}/1
-If-None-Match: 0
-
 ### Suche mit nicht-vorhandener Lied-ID
-GET {{restUrl}}/999999
+GET {{restUrl}}/1000
 
 ### Suche mit vorhandenem Titel
-GET {{restUrl}}?titel=a
+GET {{restUrl}}?titel=on
 
 ### Suche mit nicht-vorhandenem Titel
 GET {{restUrl}}?titel=xxx
 
-### Suche mit vorhandenem Schlagwort "Pop"
-GET {{restUrl}}?Pop=true
+### Suche mit vorhandenem Schlagwort "pop"
+GET {{restUrl}}?pop=true
 
 ### Suche mit nicht-vorhandener Property
-GET {{restUrl}}?php=true
+GET {{restUrl}}?rock=true
 
 ### Suche mit gueltiger Liedart
 GET {{restUrl}}?art=CD
